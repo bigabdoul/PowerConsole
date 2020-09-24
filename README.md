@@ -9,8 +9,9 @@ The `SmartConsole` class is the blueprint that provides the core functionality.
 
 ```C#
 using System;
+using PowerConsole;
 
-namespace PowerConsole.Test
+namespace PowerConsoleTest
 {
     class Program
     {
@@ -54,9 +55,14 @@ namespace PowerConsole.Test
             MyConsole.WriteInfo("\nWelcome to FizzBuzz!\nTo quit the loop enter 0.\n\n");
 
             double? number;
+            const string validationMessage = "Only numbers, please! ";
 
-            while ((number = MyConsole.GetResponse<double?>("Enter a number: ", "Only numbers, please! ")) != 0)
+            while ((number = MyConsole.GetResponse<double?>("Enter a number: ", validationMessage)) != 0)
             {
+                // Writes out:
+                //  "FizzBuzz" if the input is divisible both by 3 and 5
+                //  "Buzz" if divisible by 3 only
+                //  "Fizz" if divisible by 5 only
                 if (number == null) continue;
                 if ((number % 3 == 0) && (number % 5 == 0))
                 {
