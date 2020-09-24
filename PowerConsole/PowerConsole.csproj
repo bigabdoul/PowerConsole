@@ -4,9 +4,25 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>PowerConsole</RootNamespace>
     <AssemblyName>PowerConsole</AssemblyName>
+    <Authors>Abdourahamane Kaba</Authors>
+    <Company>Karfamsoft</Company>
+    <Description>Makes strongly-typed user input collection and validation through the Console easier, and adds more useful utility methods to it.</Description>
+    <Copyright>© 2020 Karfamsoft. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/bigabdoul/PowerConsole</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bigabdoul/PowerConsole</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>console, standard, io, c#, .net</PackageTags>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>PowerConsole.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>PowerConsole.xml</DocumentationFile>
   </PropertyGroup>
 
