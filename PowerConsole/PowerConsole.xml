@@ -1,0 +1,905 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PowerConsole</name>
+    </assembly>
+    <members>
+        <member name="T:PowerConsole.ContinuationException">
+            <summary>
+            Represents an exception that is thrown when the condition required for
+            continuing code execution has not been met.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.ContinuationException.#ctor">
+            <summary>
+            Intializes a new instance of the <see cref="T:PowerConsole.ContinuationException"/> class.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.ContinuationException.#ctor(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:PowerConsole.ContinuationException.#ctor(System.String,System.Exception)">
+            <inheritdoc/>
+        </member>
+        <member name="T:PowerConsole.Prompt">
+            <summary>
+            Represents an object that stores a prompt message and the corresponding
+            response.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.Prompt.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.Prompt" /> class using
+            the especified parameter.
+            </summary>
+            <param name="message">The prompt message.</param>
+        </member>
+        <member name="M:PowerConsole.Prompt.#ctor(System.String,System.Object,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.Prompt" /> class using
+            the especified parameter.
+            </summary>
+            <param name="message">The prompt message.</param>
+            <param name="response">The response to the current prompt.</param>
+            <param name="id">
+            The identifier of the current prompt. If null will be identical to
+            <paramref name="message"/>.
+            </param>
+        </member>
+        <member name="P:PowerConsole.Prompt.Id">
+            <summary>
+            Gets or sets the identifier of the prompt.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.Prompt.Message">
+            <summary>
+            Gets the prompt message.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.Prompt.Response">
+            <summary>
+            Gets or sets the response of the prompt.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToByte">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Byte"/>.
+            </summary>
+            <returns>The <see cref="T:System.Byte"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToShort">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Int16"/>.
+            </summary>
+            <returns>The <see cref="T:System.Int16"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToInt">
+            <summary>
+            Casts and returns the response as an <see cref="T:System.Int32"/>.
+            </summary>
+            <returns>The <see cref="T:System.Int32"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToLong">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Int64"/>.
+            </summary>
+            <returns>The <see cref="T:System.Int64"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToFloat">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Single"/>.
+            </summary>
+            <returns>The <see cref="T:System.Single"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToDouble">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Double"/>.
+            </summary>
+            <returns>The <see cref="T:System.Double"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToDecimal">
+            <summary>
+            Casts and returns the response as a <see cref="T:System.Decimal"/>.
+            </summary>
+            <returns>The <see cref="T:System.Decimal"/> value represented by <see cref="P:PowerConsole.Prompt.Response"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.As``1(System.IFormatProvider)">
+            <summary>
+            Attempts to convert <see cref="P:PowerConsole.Prompt.Response"/> to an instance of
+            <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="provider">
+            An object that supplies culture-specific formatting information.
+            </param>
+            <returns>
+            An instance of <typeparamref name="T"/> or its default value.
+            </returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.EqualsIgnoreCase(System.String)">
+            <summary>
+            Determines whether the specified <paramref name="value"/> is equal
+            to the string representation of <see cref="P:PowerConsole.Prompt.Response"/> using 
+            case-insensitive comparison.
+            </summary>
+            <param name="value">
+            The value to compare <see cref="P:PowerConsole.Prompt.Response"/> against.
+            </param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.Prompt.ToString">
+            <summary>
+            Returns the string representation of the current Prompt instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:PowerConsole.SmartConsole">
+            <summary>
+            Represents an object that makes strongly-typed user input collection
+            and validation through the <see cref="T:System.Console"/> easier.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.SmartConsole" /> class.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.#ctor(System.IO.TextReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.SmartConsole" /> class
+            using the specified parameter.
+            </summary>
+            <param name="reader">The text reader used to scan user inputs.</param>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.#ctor(System.IO.TextReader,System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.SmartConsole" /> class
+            using the specified parameters.
+            </summary>
+            <param name="inReader">A <see cref="T:System.IO.TextReader"/> that represents the standard input stream.</param>
+            <param name="outWriter">A <see cref="T:System.IO.TextWriter"/> that represents the standard output stream.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="inReader"/> or <paramref name="outWriter"/> is null.
+            </exception>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.LastPrompt">
+            <summary>
+            Returns the last <see cref="T:PowerConsole.Prompt" /> instance or null.
+            </summary>
+            <returns>An instance of the <see cref="T:PowerConsole.Prompt" /> class or null.</returns>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.Prompts">
+            <summary>
+            Returns a collection containing all <see cref="T:PowerConsole.Prompt"/> objects
+            added to the underlying history dictionary.
+            </summary>
+            <returns>A read-only collection of <see cref="T:PowerConsole.Prompt"/> elements.</returns>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.Formatters">
+            <summary>
+            Gets a dictionary of <see cref="T:System.IFormatProvider"/> elements.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.InfoColor">
+            <summary>
+            Gets or sets the <see cref="T:System.ConsoleColor"/> to use for writing out
+            info messages. The default is <see cref="F:System.ConsoleColor.Blue"/>.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.WarningColor">
+            <summary>
+            Gets or sets the <see cref="T:System.ConsoleColor"/> to use for writing out
+            warning messages. The default is <see cref="F:System.ConsoleColor.Yellow"/>.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.ErrorColor">
+            <summary>
+            Gets or sets the <see cref="T:System.ConsoleColor"/> to use for writing out
+            error messages. The default is <see cref="F:System.ConsoleColor.Red"/>.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.SuccessColor">
+            <summary>
+            Gets or sets the <see cref="T:System.ConsoleColor"/> to use for writing out
+            success messages. The default is <see cref="F:System.ConsoleColor.Green"/>.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.Culture">
+            <summary>
+            Gets the culture used for this console.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.SmartConsole.ValidationMessages">
+            <summary>
+            Gets or sets validation messages for type categories.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.SmartConsole.Default">
+            <summary>
+            Returns the default instance of the <see cref="T:PowerConsole.SmartConsole"/> class.
+            </summary>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Prompt(System.String)">
+            <summary>
+            Writes out a message and collects user input.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Prompt(System.String,System.Boolean)">
+            <summary>
+            Writes out a message, collects user input, and optionally stores the 
+            message into the prompt history.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Prompt(System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Writes out a message, collects user input, and optionally stores the 
+            message into the prompt history.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <param name="promptId">A unique identifier of the prompt.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptLine(System.String)">
+            <summary>
+            Writes out a message and terminates the line, and collects user input.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptLine(System.String,System.Boolean)">
+            <summary>
+            Writes out a message and terminates the line, collects user input, and
+            optionally stores the message into the prompt history.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptLine(System.String,System.String)">
+            <summary>
+            Writes out a message, terminates the line, and collects user input.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptLine(System.String,System.String,System.Boolean)">
+            <summary>
+            Writes out a message, terminates the line, collects user input, and
+            optionally stores the message into the prompt history.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Prompt``1(System.String,System.String,System.Boolean,System.String,System.Func{``0,System.Boolean},System.String,System.Func{System.String,System.IFormatProvider,``0})">
+            <summary>
+            Writes out a message, collects user input as a strongly-typed value,
+            and optionally stores the response into the prompt history.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="message">The prompt message to display.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="promptId">A unique identifier of the prompt.</param>
+            <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetResponse(System.String,System.String)">
+            <summary>
+            Writes out a message and collects user input as a string.
+            The response is not stored into the prompt history.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>The string response of the last prompt.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetResponse``1(System.String,System.String,System.Func{``0,System.Boolean},System.Func{System.String,System.IFormatProvider,``0})">
+            <summary>
+            Writes out a message and collects user input as a strongly-typed value.
+            The response is not stored into the prompt history.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="message">The prompt message to display.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
+            <returns>The converted response of the last prompt.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.ConvertResponse``1(System.String,System.Func{System.String,System.IFormatProvider,``0},System.String,System.Func{``0,System.Boolean})">
+            <summary>
+            Writes a message and collects user input as a strongly-typed value by allowing custom conversion.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="message">The prompt message to display.</param>
+            <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptYes(System.String,System.String[])">
+            <summary>
+            Writes out a message and collects user input as a boolean where the
+            default response is affirmative (Yes).
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="defaultResponses">
+            Zero or more strings accepted as the default response. If the
+            argument is null or empty, an empty string, "y", and "yes" are 
+            the accepted case-insensitive default responses.
+            </param>
+            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptNo(System.String,System.String[])">
+            <summary>
+            Writes out a message and collects user input as a boolean where the
+            default response is negative (No).
+            </summary>
+            <param name="message">The message to display.</param>
+            <param name="defaultResponses">
+            Zero or more strings accepted as the default response. If the
+            argument is null or empty, an empty string, "n", and "no" are 
+            the accepted case-insensitive default responses.
+            </param>
+            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetResponse(System.Action{System.String},System.Func{System.String,System.Boolean},System.String)">
+            <summary>
+            Collects user input as a string and passes it to the specified 
+            <paramref name="action"/>.
+            </summary>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetResponse``1(System.Action{``0},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Collects user input as a strongly-typed value and passes it to the
+            specified <paramref name="action"/>.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.ContinueWhen(System.Boolean)">
+            <summary>
+            Throws a <see cref="T:PowerConsole.ContinuationException"/> if the specified 
+            <paramref name="condition"/> is not true. This is a crucial part
+            of the fluent design of this <see cref="T:PowerConsole.SmartConsole"/> to avoid
+            the next method call under some circumstances. It is recommended to
+            call this method from within a try-catch block with a 
+            <see cref="T:PowerConsole.ContinuationException"/> filter.
+            </summary>
+            <param name="condition">The condition required to continue code execution.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetMaskedInput(System.String)">
+            <summary>
+            Writes out a message and collects a masked user input.
+            <para>
+            Caution: This method only changes the foreground color of
+            <see cref="T:System.Console"/> to be the same as its current background
+            color. This means that the input, although appearing invisible, 
+            may be copied from the console. For password retrieval, use
+            <see cref="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)"/> 
+            or <see cref="M:PowerConsole.SmartConsoleExtensions.ReadSecureString(System.Boolean)"/>.
+            </para>
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>The string response of the last prompt.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.String)">
+            <summary>
+            Writes out a message.
+            </summary>
+            <param name="message">The prompt message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.Object)">
+            <summary>
+            Writes out a message.
+            </summary>
+            <param name="message">The prompt message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.String,System.Object[])">
+            <summary>
+            Writes out a formatted string, using the same semantics as 
+            <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="args">
+            An object array that contains zero or more objects to format and write.
+            </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLine">
+            <summary>
+            Writes a line terminator.
+            </summary>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLine(System.String)">
+            <summary>
+            Writes out a message and a new line.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLine(System.Object)">
+            <summary>
+            Writes out a message and a new line.
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLine(System.String,System.Object[])">
+            <summary>
+            Writes out a formatted string and a new line, using the same 
+            semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="format">A composite format string.</param>
+            <param name="args">
+            An object array that contains zero or more objects to format and write.
+            </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteList(System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes out each element contained in <paramref name="args"/> using
+            the specified <paramref name="color"/>.
+            </summary>
+            <param name="color">The color to use.</param>
+            <param name="separator">A string that separates each element in <paramref name="args"/>.</param>
+            <param name="args">A one-dimensional array of objects to write out.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.String,System.ConsoleColor)">
+            <summary>
+            Writes out a message in the system's <see cref="T:System.Console"/> using
+            the specified <paramref name="color"/>.
+            </summary>
+            <param name="message">The message to write.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to use for writing the message.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes out a colored and formatted string, using the same semantics
+            as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="color">The foreground color to set.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">
+            An object array that contains zero or more objects to format and write.
+            </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteInfo(System.String)">
+            <summary>
+            Writes out a message in the system's <see cref="T:System.Console"/> using
+            the value of the <see cref="P:PowerConsole.SmartConsole.InfoColor"/> property.
+            </summary>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteSuccess(System.String)">
+            <summary>
+            Writes out a message in the system's <see cref="T:System.Console"/> using
+            the value of the <see cref="P:PowerConsole.SmartConsole.SuccessColor"/> property.
+            </summary>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteWarning(System.String)">
+            <summary>
+            Writes out a message in the system's <see cref="T:System.Console"/> using
+            the value of the <see cref="P:PowerConsole.SmartConsole.WarningColor"/> property.
+            </summary>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteError(System.String)">
+            <summary>
+            Writes out a message in the system's <see cref="P:System.Console.Error"/>
+            standard output stream using the value of the <see cref="P:PowerConsole.SmartConsole.ErrorColor"/>
+            property.
+            </summary>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteError(System.Exception)">
+            <summary>
+            Writes out the message of the specified <paramref name="error"/>.
+            </summary>
+            <param name="error">The exception that occurred.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetBackgroundColor(System.ConsoleColor)">
+            <summary>
+            Sets the background color of the system's <see cref="T:System.Console"/>
+            to the specified <paramref name="color"/>.
+            </summary>
+            <param name="color">The background color to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetForegroundColor(System.ConsoleColor)">
+            <summary>
+            Sets the foreground color of the system's <see cref="T:System.Console"/>
+            to the specified <paramref name="color"/>.
+            </summary>
+            <param name="color">The foreground color to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.RestoreBackgroundColor">
+            <summary>
+            Restores the background color of the system's <see cref="T:System.Console"/>.
+            </summary>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.RestoreForegroundColor">
+            <summary>
+            Restores the foreground color of the system's <see cref="T:System.Console"/>.
+            </summary>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Recall(System.String)">
+            <summary>
+            Prints the history of all prompts.
+            </summary>
+            <param name="prefix">A string to prepend to each <see cref="T:PowerConsole.Prompt"/>'s string representation.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Clear">
+            <summary>
+            Removes all prompts from the prompt history.
+            </summary>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetEncoding(System.Text.Encoding)">
+            <summary>
+            Sets the encoding the <see cref="T:System.Console"/> uses to read input and write output.
+            </summary>
+            <param name="encoding">The character encoding to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetCulture(System.String)">
+            <summary>
+            Sets the value of the <see cref="P:PowerConsole.SmartConsole.Culture"/> property.
+            </summary>
+            <param name="value">The name of the culture.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+            <exception cref="T:System.Globalization.CultureNotFoundException">
+            <paramref name="value"/> is not a valid culture name.
+            </exception>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Store(System.Boolean)">
+            <summary>
+            Instructs this <see cref="T:PowerConsole.SmartConsole"/> instance to force-store
+            all prompts or leave the decision to individual method calls.
+            </summary>
+            <param name="value">true to force-store all prompts, otherwise
+            false to leave the decision to method calls.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetInfoColor(System.ConsoleColor)">
+            <summary>
+            Sets the <see cref="P:PowerConsole.SmartConsole.InfoColor"/> property value.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetWarningColor(System.ConsoleColor)">
+            <summary>
+            Sets the <see cref="P:PowerConsole.SmartConsole.WarningColor"/> property value.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetErrorColor(System.ConsoleColor)">
+            <summary>
+            Sets the <see cref="P:PowerConsole.SmartConsole.ErrorColor"/> property value.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetSuccessColor(System.ConsoleColor)">
+            <summary>
+            Sets the <see cref="P:PowerConsole.SmartConsole.SuccessColor"/> property value.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetValidationMessage(PowerConsole.ValidationMessages)">
+            <summary>
+            Sets validation messages for type categories.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetInput``1(System.String,System.String,System.Boolean,System.String,System.Func{``0,System.Boolean},System.String,System.Func{System.String,System.IFormatProvider,``0})">
+            <summary>
+            Collects the user input and makes sure that it is valid according
+            to the specified validator, if any.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="message">The prompt message, which is also the history dictionary's key.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <param name="store">true to store the message into the prompt history, otherwise false.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="promptId">A unique identifier of the prompt.</param>
+            <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetValidInput``1(System.String,System.String,System.Func{``0,System.Boolean},System.Func{System.String,System.IFormatProvider,``0})">
+            <summary>
+            Collects the user input and makes sure that it is valid according
+            to the specified validator, if any.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="message">The prompt message, which is also the history dictionary's key.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.StorePrompt(System.String,System.String,System.Object,System.String)">
+            <summary>
+            Stores the response into the prompt history.
+            </summary>
+            <param name="message">The prompt message.</param>
+            <param name="historyLabel">An alternative message to use for history replay.</param>
+            <param name="response">The prompt response to store.</param>
+            <param name="promptId">A unique identifier of the prompt.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.RecallResponse(System.String)">
+            <summary>
+            Writes the response of the prompt identified by <paramref name="message"/>.
+            </summary>
+            <param name="message">The prompt message.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="T:PowerConsole.SmartConsoleExtensions">
+            <summary>
+            Provides extension methods for instances of a <see cref="T:PowerConsole.SmartConsole"/> class.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.AddFormatProvider``1(PowerConsole.SmartConsole,System.IFormatProvider)">
+            <summary>
+            Adds a format provider for the type <typeparamref name="T"/> used
+            when converting a user input.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="provider">An object that supplies culture-specific formatting information.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.RemoveFormatProvider``1(PowerConsole.SmartConsole)">
+            <summary>
+            Attempts to remove an instance of <see cref="T:System.IFormatProvider"/>
+            of type <typeparamref name="T"/> from the dictionary.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Repeat(PowerConsole.SmartConsole,System.Char,System.Int32)">
+            <summary>
+            Writes out a line using a specified Unicode character repeated a 
+            specified number of times.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="c">A Unicode character.</param>
+            <param name="count">The number of times <paramref name="c"/> occurs.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Repeat(PowerConsole.SmartConsole,System.String,System.Int32)">
+            <summary>
+            Writes out a line using a specified Unicode character repeated a 
+            specified number of times.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="s">A series of Unicode characters to repeat.</param>
+            <param name="count">The number of times <paramref name="s"/> occurs.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Repeat(PowerConsole.SmartConsole,System.Int32,System.String,System.Object[])">
+            <summary>
+            Writes out a line using a specified formatted Unicode string 
+            repeated a specified number of times.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="count">The number of times the formatted string occurs.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format and write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.CreateObject``1(PowerConsole.SmartConsole)">
+            <summary>
+            Creates a new object of type <typeparamref name="T"/> whose 
+            properties' values were collected through a series of prompts.
+            </summary>
+            <typeparam name="T">The type of the object to create.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <returns>An initialized instance of the type <typeparamref name="T"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.FindPrompt(PowerConsole.SmartConsole,System.String,PowerConsole.Prompt@)">
+            <summary>
+            Finds the first <see cref="T:PowerConsole.Prompt"/> whose <see cref="P:PowerConsole.Prompt.Id"/>
+            matches the specified <paramref name="idOrMessage"/> parameter.
+            The comparison is case-sensitive.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="idOrMessage">The <see cref="P:PowerConsole.Prompt.Id"/> or <see cref="P:PowerConsole.Prompt.Message"/> value to match.</param>
+            <param name="result">Returns the matched <see cref="T:PowerConsole.Prompt"/> or null.</param>
+            <returns>true if the <see cref="P:PowerConsole.SmartConsole.Prompts"/> collection contains a match, otherwise false.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.WriteFile(PowerConsole.SmartConsole,System.String,System.Text.Encoding)">
+            <summary>
+            Writes out all collected prompts with their respective responses to
+            a file. If the target file already exists, it is overwritten.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/> instance.</param>
+            <param name="path">The file to write to.</param>
+            <param name="encoding">The encoding to apply to the string. Can be 
+            null, which then resolves to <see cref="P:System.Text.Encoding.UTF8"/>.</param>
+            <returns>A reference to the specified <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.WriteTo(PowerConsole.SmartConsole,System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Writes the comobined string representation of all <see cref="T:PowerConsole.Prompt"/>
+            elements contained in the <see cref="P:PowerConsole.SmartConsole.Prompts"/> collection.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/> instance.</param>
+            <param name="stream">A writable <see cref="T:System.IO.Stream"/> to write to.</param>
+            <param name="encoding">The encoding to use. If null, <see cref="P:System.Text.Encoding.UTF8"/> will be used.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.AsString(System.Collections.Generic.IEnumerable{PowerConsole.Prompt},System.String)">
+            <summary>
+            Returns the combined string representation of all <see cref="T:PowerConsole.Prompt"/>
+            elements contained in the specified collection.
+            </summary>
+            <param name="collection">The collection to transform.</param>
+            <param name="separator">The string to use as a separator. If null,
+            <see cref="P:System.Environment.NewLine"/> will be used.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)">
+            <summary>
+            Reads masked keystrokes from the system's <see cref="T:System.Console"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/> instance.</param>
+            <param name="message">The optional prompt message to display.</param>
+            <param name="useMask">true to write out an asterisk on every keystroke, otherwise, false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TryConvert``1(System.String,System.IFormatProvider,``0@)">
+            <summary>
+            Attempts to change the type of the specified <paramref name="response"/>.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="response">The response to convert.</param>
+            <param name="provider">An object that supplies culture-specific formatting information.</param>
+            <param name="result">Returns the converted <paramref name="response"/>.
+            </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.GetTypeCategory(System.Type)">
+            <summary>
+            Returns the <see cref="T:PowerConsole.TypeCategory"/> value for the specified type.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.ReadSecureString(System.Boolean)">
+            <summary>
+            Reads masked keystrokes from the system's <see cref="T:System.Console"/>.
+            </summary>
+            <param name="useMask">
+            true to write out an asterisk on every keystroke, otherwise, false.
+            </param>
+            <returns>A string.</returns>
+        </member>
+        <member name="T:PowerConsole.TypeCategory">
+            <summary>
+            Provides categorized values for <see cref="T:System.TypeCode"/> values.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.TypeCategory.Boolean">
+            <summary>
+            Boolean type code.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.TypeCategory.DateTime">
+            <summary>
+            DateTime type code.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.TypeCategory.IntegralNumber">
+            <summary>
+            Integral number type codes, such as <see cref="T:System.Byte"/>, 
+            <see cref="T:System.Int16"/>, <see cref="T:System.Int32"/>, <see cref="T:System.Int64"/>, 
+            and their respective unsigned equivalents.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.TypeCategory.FloatingPointNumber">
+            <summary>
+            Floating point number type codes, such as <see cref="T:System.Decimal"/>, 
+            <see cref="T:System.Double"/>, and <see cref="T:System.Single"/>.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.TypeCategory.Other">
+            <summary>
+            Other type codes, such as <see cref="T:System.String"/>, <see cref="T:System.Object"/>, 
+            <see cref="T:System.DBNull"/>, and a null reference.
+            </summary>
+        </member>
+        <member name="T:PowerConsole.ValidationMessages">
+            <summary>
+            Encapsulates validation messages for type categories.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.ValidationMessages.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.ValidationMessages"/> class.
+            </summary>
+        </member>
+        <member name="F:PowerConsole.ValidationMessages.Default">
+            <summary>
+            Represents the default <see cref="T:PowerConsole.ValidationMessages"/> instance.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.ValidationMessages.ForBoolean">
+            <summary>
+            Gets or sets the validation for a type of the <see cref="F:PowerConsole.TypeCategory.Boolean"/> category.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.ValidationMessages.ForDateTime">
+            <summary>
+            Gets or sets the validation for a type of the <see cref="F:PowerConsole.TypeCategory.DateTime"/> category.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.ValidationMessages.ForIntegralNumber">
+            <summary>
+            Gets or sets the validation for a type of the <see cref="F:PowerConsole.TypeCategory.IntegralNumber"/> category.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.ValidationMessages.ForFloatingPointNumber">
+            <summary>
+            Gets or sets the validation for a type of the <see cref="F:PowerConsole.TypeCategory.FloatingPointNumber"/> category.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.ValidationMessages.ForOther">
+            <summary>
+            Gets or sets the validation for a type of the <see cref="F:PowerConsole.TypeCategory.Other"/> category.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.ValidationMessages.GetDefaultValidationMessage``1(PowerConsole.ValidationMessages)">
+            <summary>
+            Returns the most appropriate error message for the specified type
+            <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">The type for which to return an error message.</typeparam>
+            <param name="messages">The <see cref="T:PowerConsole.ValidationMessages"/> to use.
+            If null, <see cref="F:PowerConsole.ValidationMessages.Default"/> will be used.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+    </members>
+</doc>
