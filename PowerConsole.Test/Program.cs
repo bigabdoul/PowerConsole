@@ -48,7 +48,7 @@ namespace PowerConsole.Test
                 Demos.FizzBuzz();
 
             if (console.PromptYes("Run Mortgate Calculator demo? (Y/n) "))
-                Demos.MortgageCalculator();
+                Demos.CalculateMortgage();
         }
     }
 }

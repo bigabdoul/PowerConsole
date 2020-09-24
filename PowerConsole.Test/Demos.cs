@@ -79,38 +79,29 @@ namespace PowerConsole.Test
             Goodbye("\nThank you for playing FizzBuzz. Goodbye!\n\n");
         }
 
-        internal static void MortgageCalculator()
+        internal static void CalculateMortgage()
         {
             MyConsole.WriteInfo("\nWelcome to Mortgage Calculator!\n\n");
 
             var principal = MyConsole.GetResponse<decimal>("Principal: ",
-                "Enter a number between 1000 and 1,000,000: ",
-                input => input >= 1000M && input <= 1000000M);
+                validationMessage: "Enter a number between 1000 and 1,000,000: ",
+                validator: input => input >= 1000M && input <= 1000000M);
 
             var numPayments = MyConsole.GetResponse<short>("Number of payments: ",
-                    "Please enter a whole number between 1 and 360: ",
-                    input => input >= 1 && input <= 360);
+                "Please enter a whole number between 1 and 360: ",
+                input => input >= 1 && input <= 360);
 
             var rate = MyConsole.GetResponse<float>("Annual interest rate: ",
-                    "Interest rate must be a stricly positive decimal number in the range ]0, 30]: ",
-                    input => input > 0F && input <= 30F);
+                "The interest rate must be > 0 and <= 30.",
+                input => input > 0F && input <= 30F);
 
-            var mortgage = CalculateMortgage();
+            var mortgage = MortgageCalculator.Calculate(principal, numPayments, rate);
 
-            MyConsole.Write($"The monthly down payment is: ").WriteInfo($"{mortgage:C}\n\n");
+            MyConsole
+                .Write($"The monthly down payment is: ")
+                .WriteInfo($"{mortgage:C}\n\n");
 
             Goodbye();
-
-            decimal CalculateMortgage()
-            {
-                byte PERCENT = 100;
-                byte MONTHS_IN_YEAR = 12;
-                var r = rate / PERCENT / MONTHS_IN_YEAR;
-                var pow = Math.Pow(1 + r, numPayments);
-                var bdec = new decimal(r * pow / (pow - 1));
-
-                return principal * bdec;
-            }
         }
 
         internal static void CollectUserInfo()
