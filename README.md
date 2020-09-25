@@ -3,14 +3,6 @@
 Makes strongly-typed user input collection and validation through the Console
 easier, and adds more useful utility methods to it.
 
-## Introduction
-
-Creating console applications has never been easier and more fun than with the
-fresh new **PowerConsole** project. And let me say this straight away: No, console
-apps are not a thing of the past! In fact, they're becoming more and more 
-popular thanks to command line tools like dotnet, git, npm (backed by Node.js),
-and so on.
-
 ## What is PowerConsole?
 
 PowerConsole is a .NET Standard project that makes strongly-typed user input
@@ -22,7 +14,27 @@ create a new .NET Core Console application and install the package from NuGet:
 
 `Install-Package PowerConsole -Version 1.0.0`
 
+## Why PowerConsole?
 
+Almost every beginner tutorial for any server-side programming language makes 
+use of the console to write out on a standard input/output screen the famous 
+"Hello World!". Why? Because console applications are a great choice for 
+learners: they're easy to create and fast to execute. However, when a console 
+app requires user interaction such as prompting for their name and password, 
+or collecting and validating their inputs against a predefined set of rules, 
+then developing efficiently a console app becomes a real pain in the back.
+
+"Great choice for learners" doesn't mean that it's not meant for experienced
+developers. In fact, developing advanced console applications are reserved for 
+those who actually know what they're doing. So it makes perfectly sense to have
+a tool that allows them to be more productive.
+
+Developing efficient console applications is a daunting task. This is mostly 
+due to the fact that the Console class in .NET's System namespace is a static 
+class by design and as such does not retain state, thus making it difficult to 
+collect a set of related data. That's where SmartConsole steps in: it 
+encapsulates methods and data required to build an interactive console 
+application that seamlessly enforces complex business logic.
 
 ## Getting started
 
@@ -117,39 +129,9 @@ namespace PowerConsoleTest
 }
 ```
 
-## Background
-
-I initially started this project as a Java package using JDK 14 but quickly 
-realized that this language has very limited support for **TRUE** generic 
-programming. So I copy-pasted my code into a new .NET Standard project, started
-refactoring it there, and eventually ended up adding more and more functions 
-to the class named SmartConsole.
-
-## Why PowerConsole?
-
-Almost every beginner tutorial for any server-side programming language makes 
-use of the console to write out on a standard input/output screen the famous 
-"Hello World!". Why? Because console applications are a great choice for 
-learners: they're easy to create and fast to execute. However, when a console 
-app requires user interaction such as prompting for their name and password, 
-or collecting and validating their inputs against a predefined set of rules, 
-then developing efficiently a console app becomes a real pain in the back.
-
-"Great choice for learners" doesn't mean that it's not meant for experienced
-developers. In fact, developing advanced console applications are reserved for 
-those who actually know what they're doing. So it makes perfectly sense to have
-a tool that allows them to be more productive.
-
-Developing efficient console applications is a daunting task. This is mostly 
-due to the fact that the Console class in .NET's System namespace is a static 
-class by design and as such does not retain state, thus making it difficult to 
-collect a set of related data. That's where SmartConsole steps in: it 
-encapsulates methods and data required to build an interactive console 
-application that seamlessly enforces complex business logic.
-
 ## Use cases
 
-Let's quickly walk through two use cases to illustrate what problems 
+Let's quickly walk through a series of use cases to illustrate what problems 
 **PowerConsole** solves and what extra values it adds.
 
 ### Use case #1: Yes or No?
@@ -303,3 +285,133 @@ That's it! Really, that's all! Everything from user input collection, casting
 (type conversion), and validation is handled internally. Every time the user 
 enters an invalid entry, an appropriate error message is displayed and she/he 
 will be given another opportunity to enter an acceptable value.
+
+### Use case #3: Form input collection
+
+We refer here to form inputs a collection of key/value pairs that are collected
+through a series of interactive prompts. Let's assume that we need to collect
+small bits of information about a user and then store that somewhere. Let's
+say that we have a user class that looks like this:
+
+```C#
+class UserInfo
+{
+    public string FullName { get; set; }
+    public int Age { get; set; }
+    public string BirthCountry { get; set; }
+    public string PreferredColor { get; set; }
+
+    public override string ToString()
+    {
+        return $"Full name: {FullName}\nAge: {Age}\nCountry of birth: {BirthCountry}\nPreferred color: {PreferredColor}";
+    }
+}
+```
+
+Very simple! Now let's create a small console app that allows us to achieve this.
+Create a new console (.NET Core or .NET Framework, it doesn't matter) app called
+*UserInfoCollectionApp* and modify the *Program* class like this:
+
+```C#
+using PowerConsole;
+
+namespace UserInfoCollectionApp
+{
+    class Program
+    {
+        internal static readonly SmartConsole MyConsole = SmartConsole.Default;
+
+        static void Main()
+        {
+            CollectUserInfo();
+        }
+
+        static void CollectUserInfo()
+        {
+            MyConsole.WriteInfo("Welcome to the user info collection demo!\n");
+
+            // by simply providing a validation message, we force 
+            // the input not to be empty or white space only (and to
+            // be of the appropriate type if different from string)
+            var nameValidationMessage = "Your full name is required: ";
+
+            bool validateAge(int input) => input >= 5 && input <= 100;
+            var ageErrorMessage = "Age (in years) must be a whole number from 5 to 100: ";
+
+            // notice the 'promptId' parameter: they'll allow us 
+            // strongly-typed object instantiation and property mapping
+            while
+            (
+                MyConsole.Store() // forces all subsequent prompts to be stored
+                    .Prompt("\nEnter your full name: ", historyLabel: "Full Name:", validationMessage: nameValidationMessage, promptId: nameof(UserInfo.FullName))
+                    .Prompt<int>("How old are you? ", "Plain Age:", validationMessage: ageErrorMessage, validator: validateAge, promptId: nameof(UserInfo.Age))
+                    .Prompt("In which country were you born? ", "Birth Country:", promptId: nameof(UserInfo.BirthCountry))
+                    .Prompt("What's your preferred color? ", "Preferred Color:", promptId: nameof(UserInfo.PreferredColor))
+                    .WriteLine()
+                    .WriteLine("Here's what you've entered: ")
+                    .WriteLine()
+                    .Recall(prefix: "> ")
+                    .WriteLine()
+                    .Store(false) // stops storing prompts
+
+                    // give the user an opportunity to review and correct their inputs
+                    .PromptYes("Is that correct? (Y/n) ") == false
+            )
+            {
+                // nothing else required within this while loop
+            }
+
+            MyConsole.WriteInfo("Thank you for providing your details.\n");
+
+            if (!MyConsole.PromptNo("Do you wish to save them now? (y/N) "))
+            {
+                // Create a new instance of the UserInfo class and initialize
+                // its properties with the responses of the previous prompts.
+                // CreateObject<T> as an extension method defined in the
+                // static SmartConsoleExtensions class.
+                var user = MyConsole.CreateObject<UserInfo>();
+                
+                // do something with it
+                MyConsole.SetForegroundColor(System.ConsoleColor.DarkGreen)
+                    .WriteLine(user)
+                    .RestoreForegroundColor();
+            }
+
+            // Removes all prompts from the prompt history;
+            // Does NOT clear the console buffer and corresponding 
+            // console window of display information.
+            MyConsole.Clear();
+        }
+    }
+
+    class UserInfo
+    {
+        public string FullName { get; set; }
+        public int Age { get; set; }
+        public string BirthCountry { get; set; }
+        public string PreferredColor { get; set; }
+
+        public override string ToString()
+        {
+            return $"Full name: {FullName}\nAge: {Age}\nCountry of birth: {BirthCountry}\nPreferred color: {PreferredColor}";
+        }
+    }
+}
+```
+
+The empty `while` loop does a series of 4 prompts for the 4 properties of the
+`UserInfo` class, smartly handling the age requirement. The last prompt
+**Is that correct? (Y/n)** gives the user a chance to review their inputs and
+make corrections where required.
+
+## Extra features
+
+- Method chaining: In `SmartConsole`, almost all methods return a reference to
+  the current `SmartConsole` instance. This makes it easier to chain method calls.
+- Colored outputs: Write out text using basic `ConsoleColor` values which get 
+  automatically restored as soon as control from the method returns.
+- Prompt history: Prompts can be stored and replayed later should your app have
+  a need for that.
+- Extensibilty: Since `SmartConsole` is an instance class other classes can 
+  inherit it to further extend it. We can also add extension methods to it, as
+  shown in the statement `MyConsole.CreateObject<UserInfo>();`.
