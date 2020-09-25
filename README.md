@@ -238,12 +238,38 @@ new .NET Core Console project named *MortgageCalculatorApp*, and a file named
 
 ```C#
 using System;
+using PowerConsole;
 
 namespace MortgageCalculatorApp
 {
-    // let's make this class static because we only need one method
-    static class MortgageCalculator
+    public static class MortgageCalculator
     {
+        // for the sake of reusability, let's gather all inputs from within this class
+        internal static readonly SmartConsole MyConsole = SmartConsole.Default;
+
+        public static void GetInputAndCalculate()
+        {
+            MyConsole.WriteInfo("Welcome to Mortgage Calculator!\n\n");
+
+            var principal = MyConsole.GetResponse<decimal>("Principal: ",
+                validationMessage: "Enter a number between 1000 and 1,000,000: ",
+                validator: input => input >= 1000M && input <= 1000000M);
+
+            var numPayments = MyConsole.GetResponse<short>("Number of payments: ",
+                "Please enter a whole number between 1 and 360: ",
+                input => input >= 1 && input <= 360);
+
+            var rate = MyConsole.GetResponse<float>("Annual interest rate: ",
+                "The interest rate must be > 0 and <= 30.",
+                input => input > 0F && input <= 30F);
+
+            var mortgage = Calculate(principal, numPayments, rate);
+
+            MyConsole
+                .Write($"The monthly down payment is: ")
+                .WriteInfo($"{mortgage:C}\n");
+        }
+
         public static decimal Calculate(decimal principal, short numberOfPayments, float annualInterestRate)
         {
             byte PERCENT = 100;
@@ -261,36 +287,13 @@ Change (or create) the *Program.cs* file in such a way to ressemble the
 following:
 
 ```C#
-using PowerConsole;
-
 namespace MortgageCalculatorApp
 {
     class Program
     {
-        internal static readonly SmartConsole MyConsole = SmartConsole.Default;
-        
         static void Main()
         {
-            MyConsole.WriteInfo("Welcome to Mortgage Calculator!\n\n");
-
-            var principal = MyConsole.GetResponse<decimal>("Principal: ",
-                validationMessage: "Enter a number between 1000 and 1,000,000: ",
-                validator: input => input >= 1000M && input <= 1000000M);
-
-            var numPayments = MyConsole.GetResponse<short>("Number of payments: ",
-                "Please enter a whole number between 1 and 360: ",
-                input => input >= 1 && input <= 360);
-
-            var rate = MyConsole.GetResponse<float>("Annual interest rate: ",
-                "The interest rate must be > 0 and <= 30.",
-                input => input > 0F && input <= 30F);
-
-            var mortgage = MortgageCalculator.Calculate(
-                principal, numPayments, rate);
-
-            MyConsole
-                .Write($"The monthly down payment is: ")
-                .WriteInfo($"{mortgage:C}\n");
+            MortgageCalculator.GetInputAndCalculate();
         }
     }
 }
