@@ -181,12 +181,16 @@ namespace PowerConsole
         /// <param name="historyLabel">An alternative message to use for history replay.</param>
         /// <param name="store">true to store the message into the prompt history, otherwise false.</param>
         /// <param name="promptId">A unique identifier of the prompt.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public virtual SmartConsole Prompt(string message, string historyLabel = null, bool store = false, string promptId = null)
+        public virtual SmartConsole Prompt(string message, string historyLabel = null, bool store = false,
+                                           string promptId = null, string validationMessage = null,
+                                           Func<string, bool> validator = null)
         {
             _outstream.Write(message);
             return RecallResponse(message)
-                .GetInput<string>(message, historyLabel, store, promptId: promptId);
+                .GetInput(message, historyLabel, store, validationMessage, validator, promptId);
         }
 
         /// <summary>
