@@ -108,26 +108,32 @@ namespace PowerConsole.Test
         {
             MyConsole.WriteInfo("\nWelcome to the user info collection demo!\n");
 
-            static bool _AgeValidator(int input) => input >= 5 && input <= 100;
+            // by simply providing a validation message, we force 
+            // the input not to be empty or white space only (and to
+            // be of the appropriate type if different from string)
+            var nameValidationMessage = "Your full name is required: ";
+
+            bool validateAge(int input) => input >= 5 && input <= 100;
             var ageErrorMessage = "Age (in years) must be a whole number from 5 to 100: ";
 
             // notice the 'promptId' parameter: they'll allow us 
             // strongly-typed object instantiation and property mapping
             while
             (
-                MyConsole
-                .Store() // forces all subsequent prompts to be stored
-                .Prompt("\nEnter your full name: ", "Full Name:", promptId: nameof(UserInfo.FullName))
-                .Prompt<int>("How old are you? ", "Plain Age:", validationMessage: ageErrorMessage, validator: _AgeValidator, promptId: nameof(UserInfo.Age))
-                .Prompt("In which country were you born? ", "Birth Country:", promptId: nameof(UserInfo.BirthCountry))
-                .Prompt("What's your preferred color? ", "Preferred Color:", promptId: nameof(UserInfo.PreferredColor))
-                .WriteLine()
-                .WriteLine("Here's what you've entered: ")
-                .WriteLine()
-                .Recall(prefix: "> ")
-                .WriteLine()
-                .Store(false) // stops storing prompts
-                .PromptYes("Is that correct? (Y/n) ") == false
+                MyConsole.Store() // forces all subsequent prompts to be stored
+                    .Prompt("\nEnter your full name: ", "Full Name:", validationMessage: nameValidationMessage, promptId: nameof(UserInfo.FullName))
+                    .Prompt<int>("How old are you? ", "Plain Age:", validationMessage: ageErrorMessage, validator: validateAge, promptId: nameof(UserInfo.Age))
+                    .Prompt("In which country were you born? ", "Birth Country:", promptId: nameof(UserInfo.BirthCountry))
+                    .Prompt("What's your preferred color? ", "Preferred Color:", promptId: nameof(UserInfo.PreferredColor))
+                    .WriteLine()
+                    .WriteLine("Here's what you've entered: ")
+                    .WriteLine()
+                    .Recall(prefix: "> ")
+                    .WriteLine()
+                    .Store(false) // stops storing prompts
+
+                    // give the user an opportunity to review and correct their inputs
+                    .PromptYes("Is that correct? (Y/n) ") == false
             )
             {
                 // nothing else required within this while loop
@@ -189,6 +195,10 @@ namespace PowerConsole.Test
             MyConsole.WriteSuccess(message ?? "Goodbye!\n\n")
                 .Repeat(15, "{0}{1}", "o-", "=-")
                 .WriteLine("o\n")
+
+                // Removes all prompts from the prompt history;
+                // Does NOT clear the console buffer and corresponding 
+                // console window of display information.
                 .Clear();
         }
     }
