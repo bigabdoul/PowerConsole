@@ -236,7 +236,7 @@
             <param name="store">true to store the message into the prompt history, otherwise false.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
-        <member name="M:PowerConsole.SmartConsole.Prompt(System.String,System.String,System.Boolean,System.String)">
+        <member name="M:PowerConsole.SmartConsole.Prompt(System.String,System.String,System.Boolean,System.String,System.String,System.Func{System.String,System.Boolean})">
             <summary>
             Writes out a message, collects user input, and optionally stores the 
             message into the prompt history.
@@ -245,6 +245,8 @@
             <param name="historyLabel">An alternative message to use for history replay.</param>
             <param name="store">true to store the message into the prompt history, otherwise false.</param>
             <param name="promptId">A unique identifier of the prompt.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.PromptLine(System.String)">
@@ -579,7 +581,8 @@
         </member>
         <member name="M:PowerConsole.SmartConsole.SetCulture(System.String)">
             <summary>
-            Sets the value of the <see cref="P:PowerConsole.SmartConsole.Culture"/> property.
+            Sets the values of the <see cref="P:PowerConsole.SmartConsole.Culture"/> and
+            <see cref="P:System.Threading.Thread.CurrentCulture"/> properties.
             </summary>
             <param name="value">The name of the culture.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>

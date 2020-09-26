@@ -68,6 +68,8 @@ namespace PowerConsole
             _history = new Dictionary<string, Prompt>();
             _currentForegroundColor = Console.ForegroundColor;
             _backgroundColor = Console.BackgroundColor;
+
+            Culture = Thread.CurrentThread.CurrentCulture;
         }
 
         #endregion
@@ -701,7 +703,8 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// Sets the value of the <see cref="Culture"/> property.
+        /// Sets the values of the <see cref="Culture"/> and
+        /// <see cref="Thread.CurrentCulture"/> properties.
         /// </summary>
         /// <param name="value">The name of the culture.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
