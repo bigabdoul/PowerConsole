@@ -5,7 +5,7 @@ namespace PowerConsole.Test
     // let's make this class static because we only need one method
     public static class MortgageCalculator
     {
-        public static SmartConsole Process()
+        public static SmartConsole CalculateMortgage()
         {
             var console = SmartConsole.Default.SetTitle("Mortgage Calculator Demo")
                 .WriteInfo("\nWelcome to Mortgage Calculator!\n\n");

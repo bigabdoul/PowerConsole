@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace PowerConsole
 {
@@ -12,6 +14,15 @@ namespace PowerConsole
     /// </summary>
     public static class SmartConsoleExtensions
     {
+        #region fields
+
+        const int ENTER = 13, BACKSPACE = 8, CTRL_BACKSPACE = 127;
+        
+        private static readonly Dictionary<string, char[]> NativeDigitsCache =
+            new Dictionary<string, char[]>();
+
+        #endregion
+
         /// <summary>
         /// Adds a format provider for the type <typeparamref name="T"/> used
         /// when converting a user input.
@@ -39,8 +50,8 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// Writes out a line using a specified Unicode character repeated a 
-        /// specified number of times.
+        /// Writes out a specified Unicode character repeated a specified 
+        /// number of times.
         /// </summary>
         /// <param name="console">The used <see cref="SmartConsole"/>.</param>
         /// <param name="c">A Unicode character.</param>
@@ -49,12 +60,12 @@ namespace PowerConsole
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
         public static SmartConsole Repeat(this SmartConsole console, char c, int count)
         {
-            return console.WriteLine(new string(c, count));
+            return console.Write(new string(c, count));
         }
 
         /// <summary>
-        /// Writes out a line using a specified Unicode character repeated a 
-        /// specified number of times, and appends a line terminator.
+        /// Writes out a lspecified Unicode character repeated a specified 
+        /// number of times, and appends a line terminator.
         /// </summary>
         /// <param name="console">The used <see cref="SmartConsole"/>.</param>
         /// <param name="c">A Unicode character.</param>
@@ -503,8 +514,7 @@ namespace PowerConsole
         {
             try
             {
-                var nullableUnderlyingType = Nullable.GetUnderlyingType(typeof(T));
-                var isNullable = nullableUnderlyingType != null || typeof(T) == typeof(string);
+                var isNullable = typeof(T).IsNullable(out var nullableUnderlyingType) || typeof(T) == typeof(string);
 
                 if (string.IsNullOrWhiteSpace(response))
                 {
@@ -525,9 +535,15 @@ namespace PowerConsole
         /// <summary>
         /// Returns the <see cref="TypeCategory"/> value for the specified type.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="TypeCategory"/> value that represents the 
+        /// category of the specified <paramref name="type"/>.</returns>
         public static TypeCategory GetTypeCategory(this Type type)
         {
+            if (type.IsNullable(out var underlyingType))
+            {
+                type = underlyingType;
+            }
+
             switch (Type.GetTypeCode(type))
             {
                 case TypeCode.Boolean:
@@ -558,6 +574,18 @@ namespace PowerConsole
         }
 
         /// <summary>
+        /// Determines whether the specified type is <see cref="Nullable"/>.
+        /// </summary>
+        /// <param name="type">The type to test.</param>
+        /// <param name="underlyingType">Returns the underlying type</param>
+        /// <returns>true if <paramref name="type"/> is nullable, otherwise false.</returns>
+        public static bool IsNullable(this Type type, out Type underlyingType)
+        {
+            underlyingType = Nullable.GetUnderlyingType(type);
+            return underlyingType != null;
+        }
+
+        /// <summary>
         /// Reads masked keystrokes from the system's <see cref="Console"/>.
         /// </summary>
         /// <param name="useMask">
@@ -567,21 +595,20 @@ namespace PowerConsole
         public static string ReadSecureString(bool useMask = false)
         {
             // borrowed from stackoverflow.com and slightly modified
-            const int ENTER = 13, BACKSPACE = 8, CTRL_BACKSPACE = 127;
             int[] filtered = { 0, 27, 9, 10 };
 
-            var password = new System.Security.SecureString();
+            var secureStr = new System.Security.SecureString();
 
             char chr;
 
             while ((chr = Console.ReadKey(true).KeyChar) != ENTER)
             {
-                if ((chr == BACKSPACE || chr == CTRL_BACKSPACE) && password.Length > 0)
+                if ((chr == BACKSPACE || chr == CTRL_BACKSPACE) && secureStr.Length > 0)
                 {
                     if (useMask) Console.Write("\b \b");
-                    password.RemoveAt(password.Length - 1);
+                    secureStr.RemoveAt(secureStr.Length - 1);
                 }
-                else if (((chr == BACKSPACE) || (chr == CTRL_BACKSPACE)) && (password.Length == 0))
+                else if (((chr == BACKSPACE) || (chr == CTRL_BACKSPACE)) && (secureStr.Length == 0))
                 {
                     // don't append * when length is 0 and backspace is selected
                 }
@@ -592,15 +619,99 @@ namespace PowerConsole
                 else
                 {
                     // append and eventually write * mask
-                    password.AppendChar(chr);
+                    secureStr.AppendChar(chr);
                     if (useMask) Console.Write('*');
                 }
             }
 
-            var ptr = Marshal.SecureStringToBSTR(password);
+            var ptr = Marshal.SecureStringToBSTR(secureStr);
             var result = Marshal.PtrToStringBSTR(ptr);
             Marshal.ZeroFreeBSTR(ptr);
             return result;
+        }
+
+        /// <summary>
+        /// Allows only numbers to be entered.
+        /// </summary>
+        /// <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
+        /// <param name="allowDecimal">true to allow a single decimal-point (period), otherwise false.</param>
+        /// <param name="culture">The culture to use. If null, the culture of 
+        /// the current thread or <see cref="CultureInfo.InvariantCulture"/> 
+        /// will be used.</param>
+        /// <returns></returns>
+        public static string ReadNumber(bool allowNegative = true, bool allowDecimal = false, CultureInfo culture = null)
+        {
+            var sb = new StringBuilder();
+            char chr;
+            var minus = false;
+            var period = false;
+
+            if (culture == null)
+            {
+                culture = Thread.CurrentThread.CurrentCulture ?? CultureInfo.InvariantCulture;
+            }
+
+            var numberFormat = culture.NumberFormat;
+
+            if (!NativeDigitsCache.TryGetValue(culture.EnglishName, out var nativeDigits))
+            {
+                nativeDigits = numberFormat.NativeDigits.Select(d => d[0]).ToArray();
+                NativeDigitsCache.Add(culture.EnglishName, nativeDigits);
+            }
+
+            var negativeChar = numberFormat.NegativeSign[0];
+            var decimalChar = numberFormat.NumberDecimalSeparator[0];
+
+            while ((chr = Console.ReadKey(true).KeyChar) != ENTER)
+            {
+                var len = sb.Length;
+                if (chr == BACKSPACE || chr == CTRL_BACKSPACE)
+                {
+                    if (len > 0)
+                    {
+                        Console.Write("\b \b");
+
+                        // store the char being removed
+                        len--;
+                        chr = sb[len];
+                        sb.Remove(len, 1);
+                    }
+
+                    if (minus && (len == 0 || chr == negativeChar))
+                        minus = false;
+
+                    // has the period been removed?
+                    if (period && (len == 0 || chr == decimalChar))
+                        period = false;
+                }
+                else if (nativeDigits.Contains(chr))
+                {
+                    // append only digits
+                    _AppendChar();
+                }
+                else if (chr == negativeChar && allowNegative && !minus && len == 0)
+                {
+                    // allow minus only at the very beginning of the sequence
+                    _AppendChar();
+                    minus = true;
+                }
+                else if (chr == decimalChar && allowDecimal && !period)
+                {
+                    _AppendChar();
+                    period = true;
+                }
+            }
+
+            // since ENTER was pressed, write a line in the console
+            Console.WriteLine();
+
+            return sb.ToString();
+
+            void _AppendChar()
+            {
+                sb.Append(chr);
+                Console.Write(chr);
+            }
         }
     }
 }

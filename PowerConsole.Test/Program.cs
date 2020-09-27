@@ -51,19 +51,36 @@ namespace PowerConsole.Test
                 while (runDemos)
                 {
                     var index = 1;
-                    runDemos = console.WriteLine()
-                        .WriteLines(methods1.Select(m => $"\t{index++}: {m.Name}"))
-                        .WriteLines(methods2.Select(m => $"\t{index++}: {m.Name}"))
-                        .SetResponse<int>($"\n\tSelect a demo [1 - {methodCount}]: ", input => index = input,
-                            validator: input => input > 0 && input <= methodCount,
-                            validationMessage: "\tInvalid demo number. Try again: ")
-                        .Then(() =>
-                        {
-                            _ = index <= m1Length ?
-                                methods1[index - 1].Invoke(null, null) :
-                                methods2[index - m1Length - 1].Invoke(null, null);
-                        })
-                        .PromptYes("\n\n\tRun another demo? (Y/n) ");
+                    try
+                    {
+                        runDemos = console.WriteLine()
+                            .WriteLines(methods1.Select(m => $"\t{index++}: {m.Name}"))
+                            .WriteLines(methods2.Select(m => $"\t{index++}: {m.Name}"))
+                            .Write("\t").RepeatLine('-', 45)
+                            .WriteLine("\t0: QUIT APPLICATION")
+                            .SetResponse<int>($"\n\tSelect a demo [1 - {methodCount}]: ", input => index = input,
+                                validator: input => input >= 0 && input <= methodCount,
+                                validationMessage: "\tInvalid demo number. Try again: ")
+                            .ContinueWhen(index > 0)
+                            .Then(() =>
+                            {
+                                _ = index <= m1Length ?
+                                    methods1[index - 1].Invoke(null, null) :
+                                    methods2[index - m1Length - 1].Invoke(null, null);
+                            })
+                            .PromptYes("\n\tRun another demo? (Y/n) ");
+                    }
+                    catch (ContinuationException)
+                    {
+                        console.SetForegroundColor(ConsoleColor.Yellow);
+                        if (console.PromptYes("\tQuit application? (Y/n) "))
+                            break;
+                        console.RestoreForegroundColor();
+                    }
+                    catch (Exception ex)
+                    {
+                        console.WriteError(ex);
+                    }
                 }
             }
             else
@@ -85,6 +102,8 @@ namespace PowerConsole.Test
                 if (console.PromptYes("\tRun simple calculator demo? (Y/n) "))
                     Demos.SimpleCalculator();
             }
+
+            console.WriteLine().RestoreForegroundColor();
         }
     }
 }

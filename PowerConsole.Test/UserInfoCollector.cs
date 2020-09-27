@@ -10,7 +10,7 @@ namespace PowerConsole.Test
         // the current culture is preserved
         static readonly SmartConsole MyConsole = new SmartConsole();
 
-        public static SmartConsole Process()
+        public static SmartConsole CollectUserInfo()
         {
             MyConsole.SetTitle("User Info Collector")
                 .WriteInfo("\nWelcome to the user info collection demo!\n");

@@ -5,9 +5,10 @@ namespace PowerConsole.Test
 {
     class Calculator
     {
-        static readonly string[] Operators = new[] { "a", "s", "m", "d" };
+        private const string POSITIVE_REQUIRED = "Value must be greater than or equal to 0: ";
+        private static readonly string[] Operators = new[] { "a", "s", "m", "d" };
 
-        internal static SmartConsole Process()
+        public static SmartConsole Calculate()
         {
             const int LINE_LEN = 30;
             const string NUMBER_ERROR = "This is not valid input. Please enter an integer value: ";
@@ -78,16 +79,17 @@ namespace PowerConsole.Test
             SmartConsole.Default.WriteInfo("\nCalculate the sum of two numbers\n\n")
                 .SetResponse<double>("Input number1: ", input => result = input)
                 .SetResponse<double>("Input number2: ", input => result += input) // add previous result
-                .Write("\nResult: {0}", result);
+                .WriteLine("\nResult: {0}", result);
             return result;
         }
 
         public static double RectangleArea()
         {
             var result = 0d;
+
             SmartConsole.Default.WriteInfo("\nCalculate the area of a rectangle\n\n")
-                .SetResponse<double>("Please write the length of your rectangle: ", input => result = input)
-                .SetResponse<double>("Please write the width of your rectangle: ", input => result *= input)
+                .SetResponse<double>("Please write the length of your rectangle: ", input => result = input, validator: IsPositive, POSITIVE_REQUIRED)
+                .SetResponse<double>("Please write the width of your rectangle: ", input => result *= input, validator: IsPositive, POSITIVE_REQUIRED)
                 .WriteLine("The area of rectangle : {0}", result);
             return result;
         }
@@ -96,7 +98,7 @@ namespace PowerConsole.Test
         {
             double radius = 0d, perimeter = 0d, area = 0d;
             return SmartConsole.Default.WriteInfo("\nCalculate the area and perimeter of a circle\n\n")
-                .SetResponse<double>("Please write the radius of your circle : ", input => radius = input)
+                .SetResponse<double>("Please write the radius of your circle : ", input => radius = input, IsPositive, POSITIVE_REQUIRED)
                 .Then(() => { perimeter = 2 * Math.PI * radius; area = Math.PI * Math.Pow(radius, 2); })
                 .RepeatLine('=', 45)
                 .WriteLines($"The perimeter of your circle is: {perimeter}", $"The area of your circle is: {area}")
@@ -106,13 +108,13 @@ namespace PowerConsole.Test
         public static void PrintPrimeNumbersInInterval()
         {
             int num1 = 0, num2 = 0, sayac = 0;
-            SmartConsole.Default.WriteInfo("\nPrint prime number in an interval\n\n")
-                .SetResponse<int>("Enter lower range: ", input => num1 = input)
-                .SetResponse<int>("Enter upper range: ", input => num2 = input, validator: input => input > num1, validationMessage: "Upper range must be greater than lower value: ")
+            SmartConsole.Default.WriteInfo("\nPrint prime number in a positive interval\n\n")
+                .SetResponse<int>("Enter lower range: ", input => num1 = input, IsPositive, POSITIVE_REQUIRED)
+                .SetResponse<int>("Enter upper range: ", input => num2 = input, validator: input => input > num1, "Upper range must be greater than lower value: ")
                 .WriteLine("Prime numbers between {0} and {1} are: ", num1, num2)
-                .RepeatLine('=', 45)
                 .Then(console =>
                 {
+                    // print prime numbers
                     for (int i = num1; i < num2; i++)
                     {
                         sayac = 0;
@@ -132,7 +134,7 @@ namespace PowerConsole.Test
                             }
                         }
                     }
-                });
+                }).WriteLine();
         }
 
         internal static double DoOperation(double num1, double num2, string op)
@@ -153,5 +155,8 @@ namespace PowerConsole.Test
             }
             return double.NaN;
         }
+
+        internal static bool IsPositive(int input) => input >= 0;
+        internal static bool IsPositive(double input) => input >= 0;
     }
 }

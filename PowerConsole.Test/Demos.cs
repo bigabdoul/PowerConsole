@@ -78,11 +78,11 @@
             MyConsole.GoodBye("\nThank you for playing FizzBuzz. Goodbye!\n\n");
         }
 
-        public static void CollectUserInfo() => UserInfoCollector.Process().GoodBye();
+        public static void CollectUserInfo() => UserInfoCollector.CollectUserInfo().GoodBye();
 
-        public static void CalculateMortgage() => MortgageCalculator.Process().GoodBye();
+        public static void CalculateMortgage() => MortgageCalculator.CalculateMortgage().GoodBye();
 
-        internal static void SimpleCalculator() => Calculator.Process().GoodBye();
+        internal static void SimpleCalculator() => Calculator.Calculate().GoodBye();
 
         private static void GoodBye(this SmartConsole console, string message = null)
         {

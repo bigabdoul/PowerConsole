@@ -745,8 +745,8 @@
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.Repeat(PowerConsole.SmartConsole,System.Char,System.Int32)">
             <summary>
-            Writes out a line using a specified Unicode character repeated a 
-            specified number of times.
+            Writes out a specified Unicode character repeated a specified 
+            number of times.
             </summary>
             <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
             <param name="c">A Unicode character.</param>
@@ -756,8 +756,8 @@
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.RepeatLine(PowerConsole.SmartConsole,System.Char,System.Int32)">
             <summary>
-            Writes out a line using a specified Unicode character repeated a 
-            specified number of times, and appends a line terminator.
+            Writes out a lspecified Unicode character repeated a specified 
+            number of times, and appends a line terminator.
             </summary>
             <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
             <param name="c">A Unicode character.</param>
@@ -1042,7 +1042,16 @@
             <summary>
             Returns the <see cref="T:PowerConsole.TypeCategory"/> value for the specified type.
             </summary>
-            <returns></returns>
+            <returns>A <see cref="T:PowerConsole.TypeCategory"/> value that represents the 
+            category of the specified <paramref name="type"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.IsNullable(System.Type,System.Type@)">
+            <summary>
+            Determines whether the specified type is <see cref="T:System.Nullable"/>.
+            </summary>
+            <param name="type">The type to test.</param>
+            <param name="underlyingType">Returns the underlying type</param>
+            <returns>true if <paramref name="type"/> is nullable, otherwise false.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.ReadSecureString(System.Boolean)">
             <summary>
@@ -1052,6 +1061,17 @@
             true to write out an asterisk on every keystroke, otherwise, false.
             </param>
             <returns>A string.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.ReadNumber(System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+            <summary>
+            Allows only numbers to be entered.
+            </summary>
+            <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
+            <param name="allowDecimal">true to allow a single decimal-point (period), otherwise false.</param>
+            <param name="culture">The culture to use. If null, the culture of 
+            the current thread or <see cref="P:System.Globalization.CultureInfo.InvariantCulture"/> 
+            will be used.</param>
+            <returns></returns>
         </member>
         <member name="T:PowerConsole.TypeCategory">
             <summary>

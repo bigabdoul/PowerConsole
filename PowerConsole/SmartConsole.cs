@@ -928,7 +928,16 @@ namespace PowerConsole
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
         protected virtual T GetValidInput<T>(string message, string validationMessage, Func<T, bool> validator, Func<string, IFormatProvider, T> converter)
         {
-            var response = _instream.ReadLine();
+            var category = typeof(T).GetTypeCategory();
+            var isWholeNumber = category == TypeCategory.IntegralNumber;
+            var allowDecimal = category == TypeCategory.FloatingPointNumber;
+            var isNumber = isWholeNumber || allowDecimal;
+            
+            string _ReadLine() => isNumber
+                ? SmartConsoleExtensions.ReadNumber(allowNegative: true, allowDecimal, Culture)
+                : _instream.ReadLine();
+
+            var response = _ReadLine();
 
             if (string.IsNullOrWhiteSpace(response) &&
                 !string.IsNullOrWhiteSpace(message) && 
@@ -956,7 +965,6 @@ namespace PowerConsole
                     result = converter.Invoke(response, provider);
                     return true;
                 }
-
                 return response.TryConvert(provider, out result);
             }
 
@@ -968,7 +976,7 @@ namespace PowerConsole
             {
                 if (hasConstraint)
                     WriteError(validationMessage);
-                response = _instream.ReadLine();
+                response = _ReadLine();
             }
 
             return result;
