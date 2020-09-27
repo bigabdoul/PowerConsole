@@ -54,6 +54,18 @@ namespace PowerConsole
 
         /// <summary>
         /// Writes out a line using a specified Unicode character repeated a 
+        /// specified number of times, and appends a line terminator.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="c">A Unicode character.</param>
+        /// <param name="count">The number of times <paramref name="c"/> occurs.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
+        public static SmartConsole RepeatLine(this SmartConsole console, char c, int count)
+            => console.Repeat(c, count).WriteLine();
+
+        /// <summary>
+        /// Writes out a line using a specified Unicode character repeated a 
         /// specified number of times.
         /// </summary>
         /// <param name="console">The used <see cref="SmartConsole"/>.</param>
@@ -171,19 +183,6 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// Returns the combined string representation of all <see cref="Prompt"/>
-        /// elements contained in the specified collection.
-        /// </summary>
-        /// <param name="collection">The collection to transform.</param>
-        /// <param name="separator">The string to use as a separator. If null,
-        /// <see cref="Environment.NewLine"/> will be used.</param>
-        /// <returns></returns>
-        public static string AsString(this IEnumerable<Prompt> collection, string separator = null)
-        {
-            return string.Join(separator ?? Environment.NewLine, collection.Select(p => p));
-        }
-
-        /// <summary>
         /// Reads masked keystrokes from the system's <see cref="Console"/>.
         /// </summary>
         /// <param name="console">The used <see cref="SmartConsole"/> instance.</param>
@@ -196,6 +195,266 @@ namespace PowerConsole
                 console.Write(message);
 
             return ReadSecureString(useMask);
+        }
+
+        #region SetResponse / TrySetResponse
+
+        /// <summary>
+        /// Collects user input as a string and passes it to the specified 
+        /// <paramref name="action"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole SetResponse(this SmartConsole console, Action<string> action,
+                                               Func<string, bool> validator = null, string validationMessage = null)
+            => console.SetResponse(action, validator, validationMessage);
+
+        /// <summary>
+        /// Writes out a message, collects user input as a string value and
+        /// passes it to the specified <paramref name="action"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole SetResponse(this SmartConsole console, string message, Action<string> action,
+                                               Func<string, bool> validator = null, string validationMessage = null)
+            => console.Write(message).SetResponse(action, validator, validationMessage);
+
+        /// <summary>
+        /// Writes out a message, collects user input as a strongly-typed
+        /// value and passes it to the specified <paramref name="action"/>.
+        /// </summary>
+        /// <typeparam name="T">The conversion type.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole SetResponse<T>(this SmartConsole console, string message, Action<T> action,
+                                                  Func<T, bool> validator = null, string validationMessage = null)
+            => console.Write(message).SetResponse(action, validator, validationMessage);
+
+        /// <summary>
+        /// Attempts to collect user input as a string value and passes it to
+        /// the specified <paramref name="action"/>, or reports an error if the
+        /// method fails.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse(this SmartConsole console, Action<string> action,
+                                                  Func<string, bool> validator = null, string validationMessage = null,
+                                                  Action<Exception> onError = null)
+        {
+            try
+            {
+                return console.SetResponse(action, validator, validationMessage);
+            }
+            catch (Exception ex)
+            {
+                onError?.Invoke(ex);
+                return console;
+            }
+        }
+
+        /// <summary>
+        /// Writes out a message, attempts to collect user input as a string 
+        /// value, and passes it to the specified <paramref name="action"/>,
+        /// or reports an error if the method fails.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse(this SmartConsole console, string message, Action<string> action,
+                                                  Func<string, bool> validator = null, string validationMessage = null,
+                                                  Action<Exception> onError = null)
+            => console.Write(message).TrySetResponse(action, validator, validationMessage, onError);
+
+        /// <summary>
+        /// Attempts to collect user input as a string value and passes it to
+        /// the specified <paramref name="action"/>, or reports an error of type
+        /// <typeparamref name="TException"/> if the method fails. Other exception 
+        /// types are rethrown.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<TException>(this SmartConsole console, Action<string> action,
+                                                              Action<TException> onError = null,
+                                                              Func<string, bool> validator = null,
+                                                              string validationMessage = null) where TException : Exception
+        {
+            try
+            {
+                return console.SetResponse(action, validator, validationMessage);
+            }
+            catch (Exception ex)
+            {
+                if (ex is TException error)
+                {
+                    onError?.Invoke(error);
+                    return console;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes out a message, attempts to collect user input as a string
+        /// value, and passes it to the specified <paramref name="action"/>,
+        /// or reports an error of type <typeparamref name="TException"/> 
+        /// if the method fails. Other exception types are rethrown.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<TException>(this SmartConsole console, string message,
+                                                              Action<string> action, Action<TException> onError = null,
+                                                              Func<string, bool> validator = null,
+                                                              string validationMessage = null) where TException : Exception
+            => console.Write(message).TrySetResponse(action, onError, validator, validationMessage);
+
+        /// <summary>
+        /// Attempts to collect user input as a strongly-typed value and passes it to
+        /// the specified <paramref name="action"/>, or reports an error if the method fails.
+        /// </summary>
+        /// <typeparam name="T">The conversion type.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<T>(this SmartConsole console, Action<T> action,
+                                                     Action<Exception> onError = null, Func<T, bool> validator = null,
+                                                     string validationMessage = null)
+        {
+            try
+            {
+                return console.SetResponse(action, validator, validationMessage);
+            }
+            catch (Exception ex)
+            {
+                onError?.Invoke(ex);
+                return console;
+            }
+        }
+
+        /// <summary>
+        /// Writes out a message, attempts to collect user input as a strongly-typed
+        /// value, and passes it to the specified <paramref name="action"/>, or
+        /// reports an error if the method fails.
+        /// </summary>
+        /// <typeparam name="T">The conversion type.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<T>(this SmartConsole console, string message, Action<T> action,
+                                                     Action<Exception> onError = null, Func<T, bool> validator = null,
+                                                     string validationMessage = null)
+            => console.Write(message).TrySetResponse(action, onError, validator, validationMessage);
+
+        /// <summary>
+        /// Attempts to collect user input as a strongly-typed value and passes it
+        /// to the specified <paramref name="action"/>, or reports an error of type
+        /// <typeparamref name="TException"/> if the method fails. Other exception
+        /// types are rethrown.
+        /// </summary>
+        /// <typeparam name="T">The conversion type.</typeparam>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<T, TException>(this SmartConsole console, Action<T> action,
+                                                                 Action<TException> onError = null,
+                                                                 Func<T, bool> validator = null,
+                                                                 string validationMessage = null) where TException : Exception
+        {
+            try
+            {
+                return console.SetResponse(action, validator, validationMessage);
+            }
+            catch (Exception ex)
+            {
+                if (ex is TException error)
+                {
+                    onError?.Invoke(error);
+                    return console;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes out a message, attempts to collect user input as a strongly-typed 
+        /// value, and passes it to the specified <paramref name="action"/>,
+        /// or reports an error of type <typeparamref name="TException"/> if 
+        /// the method fails. Other exception types are rethrown.
+        /// </summary>
+        /// <typeparam name="T">The conversion type.</typeparam>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="action">The action that the retrieved value is passed to.</param>
+        /// <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole TrySetResponse<T, TException>(this SmartConsole console, string message,
+                                                                 Action<T> action, Action<TException> onError = null,
+                                                                 Func<T, bool> validator = null,
+                                                                 string validationMessage = null) where TException : Exception
+            => console.Write(message).TrySetResponse(action, onError, validator, validationMessage);
+
+        #endregion
+
+        /// <summary>
+        /// Returns the combined string representation of all <see cref="Prompt"/>
+        /// elements contained in the specified collection.
+        /// </summary>
+        /// <param name="collection">The collection to transform.</param>
+        /// <param name="separator">The string to use as a separator. If null,
+        /// <see cref="Environment.NewLine"/> will be used.</param>
+        /// <returns></returns>
+        public static string AsString(this IEnumerable<Prompt> collection, string separator = null)
+        {
+            return string.Join(separator ?? Environment.NewLine, collection.Select(p => p));
         }
 
         /// <summary>

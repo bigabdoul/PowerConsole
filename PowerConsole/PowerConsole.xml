@@ -214,6 +214,11 @@
             Gets or sets validation messages for type categories.
             </summary>
         </member>
+        <member name="P:PowerConsole.SmartConsole.MarginLeft">
+            <summary>
+            Gets the left inner margin size.
+            </summary>
+        </member>
         <member name="F:PowerConsole.SmartConsole.Default">
             <summary>
             Returns the default instance of the <see cref="T:PowerConsole.SmartConsole"/> class.
@@ -298,13 +303,15 @@
             <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
-        <member name="M:PowerConsole.SmartConsole.GetResponse(System.String,System.String)">
+        <member name="M:PowerConsole.SmartConsole.GetResponse(System.String,System.String,System.Func{System.String,System.Boolean},System.Func{System.String,System.IFormatProvider,System.String})">
             <summary>
             Writes out a message and collects user input as a string.
             The response is not stored into the prompt history.
             </summary>
             <param name="message">The prompt message to display.</param>
             <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="formatter"></param>
             <returns>The string response of the last prompt.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.GetResponse``1(System.String,System.String,System.Func{``0,System.Boolean},System.Func{System.String,System.IFormatProvider,``0})">
@@ -355,16 +362,6 @@
             the accepted case-insensitive default responses.
             </param>
             <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
-        </member>
-        <member name="M:PowerConsole.SmartConsole.SetResponse(System.Action{System.String},System.Func{System.String,System.Boolean},System.String)">
-            <summary>
-            Collects user input as a string and passes it to the specified 
-            <paramref name="action"/>.
-            </summary>
-            <param name="action">The action that the retrieved value is passed to.</param>
-            <param name="validator">A function that further restricts or validates user input.</param>
-            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
-            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.SetResponse``1(System.Action{``0},System.Func{``0,System.Boolean},System.String)">
             <summary>
@@ -458,6 +455,13 @@
             <param name="args">
             An object array that contains zero or more objects to format and write.
             </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLines(System.Object[])">
+            <summary>
+            Writes out an array of objects each one followed by a line terminator.
+            </summary>
+            <param name="args">An object array that contains zero or more objects to write.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.WriteList(System.ConsoleColor,System.String,System.Object[])">
@@ -570,6 +574,30 @@
             <summary>
             Removes all prompts from the prompt history.
             </summary>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.ReadKey(System.Boolean)">
+            <summary>
+            Obtains the next character or function key pressed by the user.
+            The pressed key is optionally displayed in the console window.
+            </summary>
+            <param name="intercept">Determines whether to display the pressed 
+            key in the console window. true to not display the pressed key; 
+            otherwise, false.</param>
+            <returns>See <see cref="M:System.Console.ReadKey(System.Boolean)"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetMarginLeft(System.Byte)">
+            <summary>
+            Sets the left inner margin size.
+            </summary>
+            <param name="value">The value to set.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.SetTitle(System.String)">
+            <summary>
+            Sets the <see cref="P:System.Console.Title"/> property value.
+            </summary>
+            <param name="value">The value to set.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.SetEncoding(System.Text.Encoding)">
@@ -712,6 +740,17 @@
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
             <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
         </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.RepeatLine(PowerConsole.SmartConsole,System.Char,System.Int32)">
+            <summary>
+            Writes out a line using a specified Unicode character repeated a 
+            specified number of times, and appends a line terminator.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="c">A Unicode character.</param>
+            <param name="count">The number of times <paramref name="c"/> occurs.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="count"/> is less than zero.</exception>
+        </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.Repeat(PowerConsole.SmartConsole,System.String,System.Int32)">
             <summary>
             Writes out a line using a specified Unicode character repeated a 
@@ -775,6 +814,170 @@
             <param name="encoding">The encoding to use. If null, <see cref="P:System.Text.Encoding.UTF8"/> will be used.</param>
             <returns></returns>
         </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)">
+            <summary>
+            Reads masked keystrokes from the system's <see cref="T:System.Console"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/> instance.</param>
+            <param name="message">The optional prompt message to display.</param>
+            <param name="useMask">true to write out an asterisk on every keystroke, otherwise, false.</param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.SetResponse(PowerConsole.SmartConsole,System.Action{System.String},System.Func{System.String,System.Boolean},System.String)">
+            <summary>
+            Collects user input as a string and passes it to the specified 
+            <paramref name="action"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.SetResponse(PowerConsole.SmartConsole,System.String,System.Action{System.String},System.Func{System.String,System.Boolean},System.String)">
+            <summary>
+            Writes out a message, collects user input as a string value and
+            passes it to the specified <paramref name="action"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.SetResponse``1(PowerConsole.SmartConsole,System.String,System.Action{``0},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Writes out a message, collects user input as a strongly-typed
+            value and passes it to the specified <paramref name="action"/>.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse(PowerConsole.SmartConsole,System.Action{System.String},System.Func{System.String,System.Boolean},System.String,System.Action{System.Exception})">
+            <summary>
+            Attempts to collect user input as a string value and passes it to
+            the specified <paramref name="action"/>, or reports an error if the
+            method fails.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse(PowerConsole.SmartConsole,System.String,System.Action{System.String},System.Func{System.String,System.Boolean},System.String,System.Action{System.Exception})">
+            <summary>
+            Writes out a message, attempts to collect user input as a string 
+            value, and passes it to the specified <paramref name="action"/>,
+            or reports an error if the method fails.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``1(PowerConsole.SmartConsole,System.Action{System.String},System.Action{``0},System.Func{System.String,System.Boolean},System.String)">
+            <summary>
+            Attempts to collect user input as a string value and passes it to
+            the specified <paramref name="action"/>, or reports an error of type
+            <typeparamref name="TException"/> if the method fails. Other exception 
+            types are rethrown.
+            </summary>
+            <typeparam name="TException">The type of exception to handle.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``1(PowerConsole.SmartConsole,System.String,System.Action{System.String},System.Action{``0},System.Func{System.String,System.Boolean},System.String)">
+            <summary>
+            Writes out a message, attempts to collect user input as a string
+            value, and passes it to the specified <paramref name="action"/>,
+            or reports an error of type <typeparamref name="TException"/> 
+            if the method fails. Other exception types are rethrown.
+            </summary>
+            <typeparam name="TException">The type of exception to handle.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``1(PowerConsole.SmartConsole,System.Action{``0},System.Action{System.Exception},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Attempts to collect user input as a strongly-typed value and passes it to
+            the specified <paramref name="action"/>, or reports an error if the method fails.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``1(PowerConsole.SmartConsole,System.String,System.Action{``0},System.Action{System.Exception},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Writes out a message, attempts to collect user input as a strongly-typed
+            value, and passes it to the specified <paramref name="action"/>, or
+            reports an error if the method fails.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``2(PowerConsole.SmartConsole,System.Action{``0},System.Action{``1},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Attempts to collect user input as a strongly-typed value and passes it
+            to the specified <paramref name="action"/>, or reports an error of type
+            <typeparamref name="TException"/> if the method fails. Other exception
+            types are rethrown.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <typeparam name="TException">The type of exception to handle.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.TrySetResponse``2(PowerConsole.SmartConsole,System.String,System.Action{``0},System.Action{``1},System.Func{``0,System.Boolean},System.String)">
+            <summary>
+            Writes out a message, attempts to collect user input as a strongly-typed 
+            value, and passes it to the specified <paramref name="action"/>,
+            or reports an error of type <typeparamref name="TException"/> if 
+            the method fails. Other exception types are rethrown.
+            </summary>
+            <typeparam name="T">The conversion type.</typeparam>
+            <typeparam name="TException">The type of exception to handle.</typeparam>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="action">The action that the retrieved value is passed to.</param>
+            <param name="onError">A callback delegate to invoke when an exception is catched.</param>
+            <param name="validator">A function that further restricts or validates user input.</param>
+            <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.AsString(System.Collections.Generic.IEnumerable{PowerConsole.Prompt},System.String)">
             <summary>
             Returns the combined string representation of all <see cref="T:PowerConsole.Prompt"/>
@@ -783,15 +986,6 @@
             <param name="collection">The collection to transform.</param>
             <param name="separator">The string to use as a separator. If null,
             <see cref="P:System.Environment.NewLine"/> will be used.</param>
-            <returns></returns>
-        </member>
-        <member name="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)">
-            <summary>
-            Reads masked keystrokes from the system's <see cref="T:System.Console"/>.
-            </summary>
-            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/> instance.</param>
-            <param name="message">The optional prompt message to display.</param>
-            <param name="useMask">true to write out an asterisk on every keystroke, otherwise, false.</param>
             <returns></returns>
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.TryConvert``1(System.String,System.IFormatProvider,``0@)">

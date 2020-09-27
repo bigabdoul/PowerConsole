@@ -24,6 +24,7 @@ namespace PowerConsole
         private ConsoleColor _currentForegroundColor;
         private ConsoleColor _backgroundColor;
         private bool? _storePrompts;
+        private string _marginLeftString = string.Empty;
 
         #endregion
 
@@ -145,13 +146,18 @@ namespace PowerConsole
         /// </summary>
         public ValidationMessages ValidationMessages { get; set; }
 
+        /// <summary>
+        /// Gets the left inner margin size.
+        /// </summary>
+        public byte MarginLeft { get; private set; }
+
         #endregion
 
         /// <summary>
         /// Returns the default instance of the <see cref="SmartConsole"/> class.
         /// </summary>
         /// <returns>A reference to the default <see cref="SmartConsole" /> instance.</returns>
-        public static readonly SmartConsole Default = new SmartConsole().SetEncoding(Encoding.UTF8);
+        public static readonly SmartConsole Default = new SmartConsole();
 
         /// <summary>
         /// Writes out a message and collects user input.
@@ -269,9 +275,12 @@ namespace PowerConsole
         /// </summary>
         /// <param name="message">The prompt message to display.</param>
         /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
+        /// <param name="validator">A function that further restricts or validates user input.</param>
+        /// <param name="formatter"></param>
         /// <returns>The string response of the last prompt.</returns>
-        public string GetResponse(string message, string validationMessage = null) 
-            => GetResponse<string>(message, validationMessage);
+        public string GetResponse(string message, string validationMessage = null, Func<string, bool> validator = null,
+                                  Func<string, IFormatProvider, string> formatter = null) 
+            => GetResponse<string>(message, validationMessage, validator, formatter);
 
         /// <summary>
         /// Writes out a message and collects user input as a strongly-typed value.
@@ -306,7 +315,7 @@ namespace PowerConsole
         /// <param name="validator">A function that further restricts or validates user input.</param>
         /// <returns></returns>
         public virtual T ConvertResponse<T>(string message, Func<string, IFormatProvider, T> converter,
-                                    string validationMessage = null, Func<T, bool> validator = null)
+                                            string validationMessage = null, Func<T, bool> validator = null)
         {
             return Prompt(message,
                           historyLabel: null,
@@ -345,18 +354,6 @@ namespace PowerConsole
             => ConvertResponse(message, (input, _) => NoDefault(input, defaultResponses));
 
         /// <summary>
-        /// Collects user input as a string and passes it to the specified 
-        /// <paramref name="action"/>.
-        /// </summary>
-        /// <param name="action">The action that the retrieved value is passed to.</param>
-        /// <param name="validator">A function that further restricts or validates user input.</param>
-        /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
-        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public SmartConsole SetResponse(Action<string> action, Func<string, bool> validator = null,
-                                         string validationMessage = null)
-            => SetResponse<string>(action, validator, validationMessage);
-
-        /// <summary>
         /// Collects user input as a strongly-typed value and passes it to the
         /// specified <paramref name="action"/>.
         /// </summary>
@@ -365,7 +362,8 @@ namespace PowerConsole
         /// <param name="validator">A function that further restricts or validates user input.</param>
         /// <param name="validationMessage">A message to display if the user enters an invalid response.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public virtual SmartConsole SetResponse<T>(Action<T> action, Func<T, bool> validator = null, string validationMessage = null)
+        public virtual SmartConsole SetResponse<T>(Action<T> action, Func<T, bool> validator = null,
+                                                   string validationMessage = null)
         {
             var result = GetInput(message: null,
                                   validationMessage: validationMessage,
@@ -495,6 +493,19 @@ namespace PowerConsole
         public SmartConsole WriteLine(string format, params object[] args)
         {
             _outstream.WriteLine(format, args);
+            return this;
+        }
+
+        /// <summary>
+        /// Writes out an array of objects each one followed by a line terminator.
+        /// </summary>
+        /// <param name="args">An object array that contains zero or more objects to write.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole WriteLines(params object[] args)
+        {
+            if (args?.Length > 0)
+                for (int i = 0; i < args.Length; i++)
+                    _outstream.WriteLine(args[i]);
             return this;
         }
 
@@ -689,7 +700,43 @@ namespace PowerConsole
             return this;
         }
 
+        /// <summary>
+        /// Obtains the next character or function key pressed by the user.
+        /// The pressed key is optionally displayed in the console window.
+        /// </summary>
+        /// <param name="intercept">Determines whether to display the pressed 
+        /// key in the console window. true to not display the pressed key; 
+        /// otherwise, false.</param>
+        /// <returns>See <see cref="Console.ReadKey(bool)"/>.</returns>
+        public ConsoleKeyInfo ReadKey(bool intercept = false)
+        {
+            return Console.ReadKey(intercept);
+        }
+
         #region property setters
+
+        /// <summary>
+        /// Sets the left inner margin size.
+        /// </summary>
+        /// <param name="value">The value to set.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole SetMarginLeft(byte value)
+        {
+            MarginLeft = value;
+            _marginLeftString = value > 0 ? new string(' ', value) : string.Empty;
+            return this;
+        }
+
+        /// <summary>
+        /// Sets the <see cref="Console.Title"/> property value.
+        /// </summary>
+        /// <param name="value">The value to set.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole SetTitle(string value)
+        {
+            Console.Title = value;
+            return this;
+        }
 
         /// <summary>
         /// Sets the encoding the <see cref="Console"/> uses to read input and write output.
