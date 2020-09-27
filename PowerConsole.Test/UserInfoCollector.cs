@@ -12,14 +12,15 @@ namespace PowerConsole.Test
 
         public static SmartConsole Process()
         {
-            MyConsole.WriteInfo("\nWelcome to the user info collection demo!\n");
+            MyConsole.SetTitle("User Info Collector")
+                .WriteInfo("\nWelcome to the user info collection demo!\n");
 
             // by simply providing a validation message, we force 
             // the input not to be empty or white space only (and to
             // be of the appropriate type if different from string)
             var nameValidationMessage = "Your full name is required: ";
 
-            bool ageValidator(int input) => input >= 5 && input <= 100;
+            static bool _AgeValidator(int input) => input >= 5 && input <= 100;
             var ageErrorMessage = "Age (in years) must be a whole number from 5 to 100: ";
 
             // notice the 'promptId' parameter: they'll allow us 
@@ -28,7 +29,7 @@ namespace PowerConsole.Test
             (
                 MyConsole.Store() // forces all subsequent prompts to be stored
                     .Prompt("\nEnter your full name: ", "Full Name:", validationMessage: nameValidationMessage, promptId: nameof(UserInfo.FullName))
-                    .Prompt<int>("How old are you? ", "Plain Age:", validationMessage: ageErrorMessage, validator: ageValidator, promptId: nameof(UserInfo.Age))
+                    .Prompt<int>("How old are you? ", "Plain Age:", validationMessage: ageErrorMessage, validator: _AgeValidator, promptId: nameof(UserInfo.Age))
                     .Prompt("In which country were you born? ", "Birth Country:", promptId: nameof(UserInfo.BirthCountry))
                     .Prompt("What's your preferred color? ", "Preferred Color:", promptId: nameof(UserInfo.PreferredColor))
                     .WriteLine()

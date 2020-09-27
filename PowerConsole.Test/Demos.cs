@@ -81,9 +81,11 @@ namespace PowerConsole.Test
             MyConsole.GoodBye("\nThank you for playing FizzBuzz. Goodbye!\n\n");
         }
 
+        internal static void CollectUserInfo() => UserInfoCollector.Process().GoodBye();
+
         internal static void CalculateMortgage() => MortgageCalculator.Process().GoodBye();
 
-        internal static void CollectUserInfo() => UserInfoCollector.Process().GoodBye();
+        internal static void SimpleCalculator() => Calculator.Process().GoodBye();
 
         internal static void GoodBye(this SmartConsole console, string message = null)
         {

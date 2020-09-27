@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 namespace PowerConsole.Test
 {
@@ -7,48 +8,49 @@ namespace PowerConsole.Test
         static void Main()
         {
             // get the default console
-            var console = SmartConsole.Default
+            var console = SmartConsole.Default.SetTitle("Power Console Demo")
                 .SetForegroundColor(ConsoleColor.Green)
-                .WriteLine("Welcome to the Power Console Demo!\n")
-                .WriteLine($"Project:\t {nameof(PowerConsole)}")
-                .WriteLine("Version:\t 1.0.0")
-                .WriteLine("Description:\t Makes strongly-typed user input collection and validation through ")
-                .WriteLine("\t\t a console easier. This is a Console on steroids.")
-                .WriteLine("Author:\t\t Abdourahamane Kaba")
-                .WriteLine("License:\t MIT")
-                .WriteLine("Copyright:\t (c) 2020 Karfamsoft\n")
+                .WriteLines("\tWelcome to the Power Console Demo!\n", 
+                    $"\tProject:\t {nameof(PowerConsole)}", 
+                    "\tVersion:\t 1.0.0", 
+                    "\tDescription:\t Makes strongly-typed user input collection and validation through ",
+                    "\t\t\t a console easier. This is a Console on steroids.",
+                    "\tAuthor:\t\t Abdourahamane Kaba",
+                    "\tLicense:\t MIT",
+                    "\tCopyright:\t (c) 2020 Karfamsoft\n")
                 .RestoreForegroundColor();
 
-            if (!console.PromptNo("Would you like to define a specific culture for this session? (yes/No) "))
+            if (!console.PromptNo("\tWould you like to define a specific culture for this session? (yes/No) "))
             {
                 // try to set user-defined culture
-                try
-                {
-                    console.Write("\nEnter a culture name to use, like ")
-                        .WriteList(ConsoleColor.Blue, ", ", "en", "en-us", "fr", "fr-ca", "de").WriteLine(", etc.")
-                        .WriteLine("Leave empty if you wish to use your computer's current culture.\n")
-                        .Write("Culture name: ")
-                        .SetResponse(culture => console.SetCulture(culture));
-                }
-                catch (System.Globalization.CultureNotFoundException ex)
-                {
-                    console.WriteError(ex);
-                }
+                console.Write("\n\tEnter a culture name to use, like ")
+                    .WriteList(ConsoleColor.Blue, ", ", "en", "en-us", "fr", "fr-ca", "de").WriteLine(", etc.")
+                    .WriteLine("\tLeave empty if you wish to use your computer's current culture.\n")
+                    .Write("\tCulture name: ")
+
+                    // try to set the culture and eventually catch an instance of
+                    // CultureNotFoundException; other error types will be rethrown
+                    .TrySetResponse<CultureNotFoundException>(
+                        culture => console.SetCulture(culture),
+                        error => console.WriteError(error));
             }
 
             // PromptNo: the default response is no, which resolves as false
-            if (!console.PromptNo("\nRun user info collection demo? (y/N) "))
+            if (!console.PromptNo("\n\tRun user info collection demo? (y/N) "))
                 Demos.CollectUserInfo();
 
             // PromptYes: the default response is yes, which resolves as true
-            if (console.PromptYes("Run password reader demo? (Yes/no) "))
+            if (console.PromptYes("\tRun password reader demo? (Yes/no) "))
                 Demos.ReadPassword();
 
-            if (console.PromptYes("Run FizzBuzz demo? (Y/n) "))
+            if (console.PromptYes("\tRun FizzBuzz demo? (Y/n) "))
                 Demos.FizzBuzz();
 
-            if (console.PromptYes("Run Mortgate Calculator demo? (Y/n) "))
+            if (console.PromptYes("\tRun Mortgate Calculator demo? (Y/n) "))
                 Demos.CalculateMortgage();
+
+            if (console.PromptYes("\tRun simple calculator demo? (Y/n) "))
+                Demos.SimpleCalculator();
         }
     }
 }

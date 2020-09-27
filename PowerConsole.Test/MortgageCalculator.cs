@@ -7,9 +7,8 @@ namespace PowerConsole.Test
     {
         public static SmartConsole Process()
         {
-            var console = SmartConsole.Default;
-
-            console.WriteInfo("\nWelcome to Mortgage Calculator!\n\n");
+            var console = SmartConsole.Default.SetTitle("Mortgage Calculator Demo")
+                .WriteInfo("\nWelcome to Mortgage Calculator!\n\n");
 
             var principal = console.GetResponse<decimal>("Principal: ",
                 validationMessage: "Enter a number between 1000 and 1,000,000: ",
@@ -20,7 +19,7 @@ namespace PowerConsole.Test
                 input => input >= 1 && input <= 360);
 
             var rate = console.GetResponse<float>("Annual interest rate: ",
-                "The interest rate must be > 0 and <= 30.",
+                "The interest rate must be > 0 and <= 30: ",
                 input => input > 0F && input <= 30F);
 
             var mortgage = Calculate(principal, numPayments, rate);
