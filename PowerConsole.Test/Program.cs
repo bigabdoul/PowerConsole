@@ -41,17 +41,17 @@ namespace PowerConsole.Test
             {
                 // dynamically discover available method; all static public methods in
                 // the Demos and Calculator classes are considered as demo methods
-                var ok = true;
                 var methods1 = typeof(Demos).GetMethods(BindingFlags.Public | BindingFlags.Static);
                 var methods2 = typeof(Calculator).GetMethods(BindingFlags.Public | BindingFlags.Static);
                 var m1Length = methods1.Length;
                 var m2Length = methods2.Length;
                 var methodCount = m1Length + m2Length;
+                var runDemos = true;
 
-                while (ok)
+                while (runDemos)
                 {
                     var index = 1;
-                    if (!console.WriteLine()
+                    runDemos = console.WriteLine()
                         .WriteLines(methods1.Select(m => $"\t{index++}: {m.Name}"))
                         .WriteLines(methods2.Select(m => $"\t{index++}: {m.Name}"))
                         .SetResponse<int>($"\n\tSelect a demo [1 - {methodCount}]: ", input => index = input,
@@ -59,14 +59,11 @@ namespace PowerConsole.Test
                             validationMessage: "\tInvalid demo number. Try again: ")
                         .Then(() =>
                         {
-                            _ = index <= m1Length ? 
-                                methods1[index - 1].Invoke(null, null) : 
+                            _ = index <= m1Length ?
+                                methods1[index - 1].Invoke(null, null) :
                                 methods2[index - m1Length - 1].Invoke(null, null);
                         })
-                        .PromptYes("\n\n\tRun another demo? (Y/n) "))
-                        {
-                            ok = false;
-                        }
+                        .PromptYes("\n\n\tRun another demo? (Y/n) ");
                 }
             }
             else
