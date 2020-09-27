@@ -413,6 +413,17 @@ namespace PowerConsole
         }
 
         /// <summary>
+        /// Writes out a character.
+        /// </summary>
+        /// <param name="value">The character to write to the text stream.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole Write(char value)
+        {
+            _outstream.Write(value);
+            return this;
+        }
+
+        /// <summary>
         /// Writes out a message.
         /// </summary>
         /// <param name="message">The prompt message to write.</param>
@@ -497,7 +508,7 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// Writes out an array of objects each one followed by a line terminator.
+        /// Writes out an array of objects, each one followed by a line terminator.
         /// </summary>
         /// <param name="args">An object array that contains zero or more objects to write.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
@@ -506,6 +517,20 @@ namespace PowerConsole
             if (args?.Length > 0)
                 for (int i = 0; i < args.Length; i++)
                     _outstream.WriteLine(args[i]);
+            return this;
+        }
+
+        /// <summary>
+        /// Writes out a collection of object, each one followed by a line terminator.
+        /// </summary>
+        /// <param name="collection">A collection that contains zero or more objects to write.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole WriteLines(IEnumerable<object> collection)
+        {
+            foreach (var line in collection)
+            {
+                _outstream.WriteLine(line);
+            }
             return this;
         }
 

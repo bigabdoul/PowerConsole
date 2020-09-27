@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
-
-namespace PowerConsole.Test
+﻿namespace PowerConsole.Test
 {
     internal static class Demos
     {
         static readonly SmartConsole MyConsole = SmartConsole.Default;
 
-        internal static void ReadPassword()
+        public static void ReadPassword()
         {
             try
             {
@@ -45,7 +42,7 @@ namespace PowerConsole.Test
             MyConsole.GoodBye();
         }
 
-        internal static void FizzBuzz()
+        public static void FizzBuzz()
         {
             MyConsole.WriteInfo("\nWelcome to FizzBuzz!\nTo quit the loop enter 0.\n\n");
 
@@ -81,13 +78,13 @@ namespace PowerConsole.Test
             MyConsole.GoodBye("\nThank you for playing FizzBuzz. Goodbye!\n\n");
         }
 
-        internal static void CollectUserInfo() => UserInfoCollector.Process().GoodBye();
+        public static void CollectUserInfo() => UserInfoCollector.Process().GoodBye();
 
-        internal static void CalculateMortgage() => MortgageCalculator.Process().GoodBye();
+        public static void CalculateMortgage() => MortgageCalculator.Process().GoodBye();
 
         internal static void SimpleCalculator() => Calculator.Process().GoodBye();
 
-        internal static void GoodBye(this SmartConsole console, string message = null)
+        private static void GoodBye(this SmartConsole console, string message = null)
         {
             if (console == null)
                 console = MyConsole;

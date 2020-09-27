@@ -401,6 +401,13 @@
             <param name="message">The prompt message to display.</param>
             <returns>The string response of the last prompt.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsole.Write(System.Char)">
+            <summary>
+            Writes out a character.
+            </summary>
+            <param name="value">The character to write to the text stream.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsole.Write(System.String)">
             <summary>
             Writes out a message.
@@ -459,9 +466,16 @@
         </member>
         <member name="M:PowerConsole.SmartConsole.WriteLines(System.Object[])">
             <summary>
-            Writes out an array of objects each one followed by a line terminator.
+            Writes out an array of objects, each one followed by a line terminator.
             </summary>
             <param name="args">An object array that contains zero or more objects to write.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.WriteLines(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>
+            Writes out a collection of object, each one followed by a line terminator.
+            </summary>
+            <param name="collection">A collection that contains zero or more objects to write.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.WriteList(System.ConsoleColor,System.String,System.Object[])">
@@ -977,6 +991,31 @@
             <param name="validator">A function that further restricts or validates user input.</param>
             <param name="validationMessage">A message to display if the user enters an invalid response.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Then(PowerConsole.SmartConsole,System.Action)">
+            <summary>
+            Invokes the specified <paramref name="action"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="action">The delegate to invoke.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Then(PowerConsole.SmartConsole,System.Action{PowerConsole.SmartConsole})">
+            <summary>
+            
+            </summary>
+            <param name="console"></param>
+            <param name="action"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Result``1(PowerConsole.SmartConsole,System.Func{``0})">
+            <summary>
+            Invokes the specified delegate function and returns its result.
+            </summary>
+            <typeparam name="T">The delegate's return type.</typeparam>
+            <param name="_">The used <see cref="T:PowerConsole.SmartConsole"/>. Is not used.</param>
+            <param name="func">The delegate to invoke.</param>
+            <returns><typeparamref name="T"/> which represents the result of the delegate <paramref name="func"/>.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.AsString(System.Collections.Generic.IEnumerable{PowerConsole.Prompt},System.String)">
             <summary>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 
 namespace PowerConsole.Test
 {
@@ -35,22 +37,57 @@ namespace PowerConsole.Test
                         error => console.WriteError(error));
             }
 
-            // PromptNo: the default response is no, which resolves as false
-            if (!console.PromptNo("\n\tRun user info collection demo? (y/N) "))
-                Demos.CollectUserInfo();
+            if (console.PromptYes("\n\tWould you like to run a specific demo? (Y/n) "))
+            {
+                // dynamically discover available method; all static public methods in
+                // the Demos and Calculator classes are considered as demo methods
+                var ok = true;
+                var methods1 = typeof(Demos).GetMethods(BindingFlags.Public | BindingFlags.Static);
+                var methods2 = typeof(Calculator).GetMethods(BindingFlags.Public | BindingFlags.Static);
+                var m1Length = methods1.Length;
+                var m2Length = methods2.Length;
+                var methodCount = m1Length + m2Length;
 
-            // PromptYes: the default response is yes, which resolves as true
-            if (console.PromptYes("\tRun password reader demo? (Yes/no) "))
-                Demos.ReadPassword();
+                while (ok)
+                {
+                    var index = 1;
+                    if (!console.WriteLine()
+                        .WriteLines(methods1.Select(m => $"\t{index++}: {m.Name}"))
+                        .WriteLines(methods2.Select(m => $"\t{index++}: {m.Name}"))
+                        .SetResponse<int>($"\n\tSelect a demo [1 - {methodCount}]: ", input => index = input,
+                            validator: input => input > 0 && input <= methodCount,
+                            validationMessage: "\tInvalid demo number. Try again: ")
+                        .Then(() =>
+                        {
+                            _ = index <= m1Length ? 
+                                methods1[index - 1].Invoke(null, null) : 
+                                methods2[index - m1Length - 1].Invoke(null, null);
+                        })
+                        .PromptYes("\n\n\tRun another demo? (Y/n) "))
+                        {
+                            ok = false;
+                        }
+                }
+            }
+            else
+            {
+                // PromptNo: the default response is no, which resolves as false
+                if (!console.PromptNo("\n\tRun user info collection demo? (y/N) "))
+                    Demos.CollectUserInfo();
 
-            if (console.PromptYes("\tRun FizzBuzz demo? (Y/n) "))
-                Demos.FizzBuzz();
+                // PromptYes: the default response is yes, which resolves as true
+                if (console.PromptYes("\tRun password reader demo? (Yes/no) "))
+                    Demos.ReadPassword();
 
-            if (console.PromptYes("\tRun Mortgate Calculator demo? (Y/n) "))
-                Demos.CalculateMortgage();
+                if (console.PromptYes("\tRun FizzBuzz demo? (Y/n) "))
+                    Demos.FizzBuzz();
 
-            if (console.PromptYes("\tRun simple calculator demo? (Y/n) "))
-                Demos.SimpleCalculator();
+                if (console.PromptYes("\tRun Mortgate Calculator demo? (Y/n) "))
+                    Demos.CalculateMortgage();
+
+                if (console.PromptYes("\tRun simple calculator demo? (Y/n) "))
+                    Demos.SimpleCalculator();
+            }
         }
     }
 }

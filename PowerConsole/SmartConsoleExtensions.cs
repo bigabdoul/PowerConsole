@@ -445,6 +445,39 @@ namespace PowerConsole
         #endregion
 
         /// <summary>
+        /// Invokes the specified <paramref name="action"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The delegate to invoke.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole Then(this SmartConsole console, Action action)
+        {
+            action.Invoke();
+            return console;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="console"></param>
+        /// <param name="action"></param>
+        /// <returns></returns>
+        public static SmartConsole Then(this SmartConsole console, Action<SmartConsole> action)
+        {
+            action.Invoke(console);
+            return console;
+        }
+
+        /// <summary>
+        /// Invokes the specified delegate function and returns its result.
+        /// </summary>
+        /// <typeparam name="T">The delegate's return type.</typeparam>
+        /// <param name="_">The used <see cref="SmartConsole"/>. Is not used.</param>
+        /// <param name="func">The delegate to invoke.</param>
+        /// <returns><typeparamref name="T"/> which represents the result of the delegate <paramref name="func"/>.</returns>
+        public static T Result<T>(this SmartConsole _, Func<T> func) => func.Invoke();
+
+        /// <summary>
         /// Returns the combined string representation of all <see cref="Prompt"/>
         /// elements contained in the specified collection.
         /// </summary>

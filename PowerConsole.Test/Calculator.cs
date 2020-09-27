@@ -7,14 +7,14 @@ namespace PowerConsole.Test
     {
         static readonly string[] Operators = new[] { "a", "s", "m", "d" };
 
-        public static SmartConsole Process()
+        internal static SmartConsole Process()
         {
             const int LINE_LEN = 30;
             const string NUMBER_ERROR = "This is not valid input. Please enter an integer value: ";
             const string ENTER_OR_QUIT = "Press Enter to continue, or any other non white space key and Enter to quit: ";
 
             // Display console window title as the Console Calculator Demo.
-            var console = SmartConsole.Default.SetTitle("Console Calculator Demo")
+            var console = SmartConsole.Default.SetTitle("\nConsole Calculator Demo")
                 .WriteInfo("\nWelcome to Console Calculator\n").Repeat('-', LINE_LEN);
 
             do
@@ -75,14 +75,67 @@ namespace PowerConsole.Test
         public static double SumOf2Numbers()
         {
             var result = 0d;
-            SmartConsole.Default.WriteLine("Calculate the sum of two numbers\n")
+            SmartConsole.Default.WriteInfo("\nCalculate the sum of two numbers\n\n")
                 .SetResponse<double>("Input number1: ", input => result = input)
                 .SetResponse<double>("Input number2: ", input => result += input) // add previous result
                 .Write("\nResult: {0}", result);
             return result;
         }
 
-        public static double DoOperation(double num1, double num2, string op)
+        public static double RectangleArea()
+        {
+            var result = 0d;
+            SmartConsole.Default.WriteInfo("\nCalculate the area of a rectangle\n\n")
+                .SetResponse<double>("Please write the length of your rectangle: ", input => result = input)
+                .SetResponse<double>("Please write the width of your rectangle: ", input => result *= input)
+                .WriteLine("The area of rectangle : {0}", result);
+            return result;
+        }
+
+        public static (double area, double perimeter) CircleAreaAndPerimeter()
+        {
+            double radius = 0d, perimeter = 0d, area = 0d;
+            return SmartConsole.Default.WriteInfo("\nCalculate the area and perimeter of a circle\n\n")
+                .SetResponse<double>("Please write the radius of your circle : ", input => radius = input)
+                .Then(() => { perimeter = 2 * Math.PI * radius; area = Math.PI * Math.Pow(radius, 2); })
+                .RepeatLine('=', 45)
+                .WriteLines($"The perimeter of your circle is: {perimeter}", $"The area of your circle is: {area}")
+                .Result(() => (area, perimeter));
+        }
+
+        public static void PrintPrimeNumbersInInterval()
+        {
+            int num1 = 0, num2 = 0, sayac = 0;
+            SmartConsole.Default.WriteInfo("\nPrint prime number in an interval\n\n")
+                .SetResponse<int>("Enter lower range: ", input => num1 = input)
+                .SetResponse<int>("Enter upper range: ", input => num2 = input, validator: input => input > num1, validationMessage: "Upper range must be greater than lower value: ")
+                .WriteLine("Prime numbers between {0} and {1} are: ", num1, num2)
+                .RepeatLine('=', 45)
+                .Then(console =>
+                {
+                    for (int i = num1; i < num2; i++)
+                    {
+                        sayac = 0;
+                        if (i > 1)
+                        {
+                            for (int j = 2; j < i; j++)
+                            {
+                                if (i % j == 0)
+                                {
+                                    sayac = 1;
+                                    break;
+                                }
+                            }
+                            if (sayac == 0)
+                            {
+                                console.Write($"{i}, ");
+                            }
+                        }
+                    }
+                });
+        }
+
+        internal static double DoOperation(double num1, double num2, string op)
         {
             // Use a switch statement to do the math.
             switch (op)
