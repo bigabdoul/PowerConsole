@@ -24,7 +24,6 @@ namespace PowerConsole
         private ConsoleColor _currentForegroundColor;
         private ConsoleColor _backgroundColor;
         private bool? _storePrompts;
-        private string _marginLeftString = string.Empty;
 
         #endregion
 
@@ -150,6 +149,16 @@ namespace PowerConsole
         /// Gets the left inner margin size.
         /// </summary>
         public byte MarginLeft { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the default responses for "No" prompts.
+        /// </summary>
+        public static string[] DefaultNoResponses { get; set; } = { string.Empty, "n", "no" };
+
+        /// <summary>
+        /// Gets or sets the default responses for "Yes" prompts.
+        /// </summary>
+        public static string[] DefaultYesResponses { get; set; } = { string.Empty, "y", "yes" };
 
         #endregion
 
@@ -741,18 +750,6 @@ namespace PowerConsole
         #region property setters
 
         /// <summary>
-        /// Sets the left inner margin size.
-        /// </summary>
-        /// <param name="value">The value to set.</param>
-        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public SmartConsole SetMarginLeft(byte value)
-        {
-            MarginLeft = value;
-            _marginLeftString = value > 0 ? new string(' ', value) : string.Empty;
-            return this;
-        }
-
-        /// <summary>
         /// Sets the <see cref="Console.Title"/> property value.
         /// </summary>
         /// <param name="value">The value to set.</param>
@@ -1008,9 +1005,6 @@ namespace PowerConsole
                 _outstream.Write($"[{_history[message].Response}] ");
             return this;
         }
-
-        static readonly string[] DefaultNoResponses = new[] { string.Empty, "n", "no" };
-        static readonly string[] DefaultYesResponses = new[] { string.Empty, "y", "yes" };
 
         private static bool YesDefault(string input, params string[] defaultResponses)
         {

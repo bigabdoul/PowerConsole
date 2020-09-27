@@ -7,6 +7,8 @@ namespace PowerConsole.Test
 {
     class Program
     {
+        const BindingFlags PUBLIC_STATIC = BindingFlags.Public | BindingFlags.Static;
+
         static void Main()
         {
             // get the default console
@@ -41,11 +43,10 @@ namespace PowerConsole.Test
             {
                 // dynamically discover available method; all static public methods in
                 // the Demos and Calculator classes are considered as demo methods
-                var methods1 = typeof(Demos).GetMethods(BindingFlags.Public | BindingFlags.Static);
-                var methods2 = typeof(Calculator).GetMethods(BindingFlags.Public | BindingFlags.Static);
+                var methods1 = typeof(Demos).GetMethods(PUBLIC_STATIC);
+                var methods2 = typeof(Calculator).GetMethods(PUBLIC_STATIC);
                 var m1Length = methods1.Length;
-                var m2Length = methods2.Length;
-                var methodCount = m1Length + m2Length;
+                var methodCount = m1Length + methods2.Length;
                 var runDemos = true;
 
                 while (runDemos)

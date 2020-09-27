@@ -13,9 +13,15 @@
     <RepositoryUrl>https://github.com/bigabdoul/PowerConsole</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>console, standard, io, c#, .net</PackageTags>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageReleaseNotes>More enhancements and fluent APIs.
+Write multiple lines using a collection of objects reducing the number of calls to WriteLine().
+Generic exception filters on TrySetResponse methods.
+Accept only numbers with culture-aware formats.
+Allow or block negative and decimal numbers using native digits.
+Abundant sample codes on Github.</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

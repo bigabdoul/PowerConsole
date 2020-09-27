@@ -16,7 +16,7 @@ namespace PowerConsole.Test
 
             // Display console window title as the Console Calculator Demo.
             var console = SmartConsole.Default.SetTitle("\nConsole Calculator Demo")
-                .WriteInfo("\nWelcome to Console Calculator\n").Repeat('-', LINE_LEN);
+                .WriteInfo("\nWelcome to Console Calculator\n").RepeatLine('-', LINE_LEN);
 
             do
             {

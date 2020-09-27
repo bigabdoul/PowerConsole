@@ -62,9 +62,9 @@ namespace PowerConsole.Test
             // save it to a useful and secure store somehow...
             MyConsole
                 .WriteLine()
-                .Repeat('-', 70)
+                .RepeatLine('-', 70)
                 .WriteWarning("CAUTION: EXISTING FILES WILL BE OVERRIDDEN WITHOUT FURTHER NOTICE!\n")
-                .Repeat('-', 70)
+                .RepeatLine('-', 70)
                 .WriteLine();
 
             // but for the sake of simplicity, we'll save them to disk

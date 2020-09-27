@@ -638,7 +638,7 @@ namespace PowerConsole
         /// <param name="culture">The culture to use. If null, the culture of 
         /// the current thread or <see cref="CultureInfo.InvariantCulture"/> 
         /// will be used.</param>
-        /// <returns></returns>
+        /// <returns>A string that represents the typed number.</returns>
         public static string ReadNumber(bool allowNegative = true, bool allowDecimal = false, CultureInfo culture = null)
         {
             var sb = new StringBuilder();
