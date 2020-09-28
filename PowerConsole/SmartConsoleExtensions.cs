@@ -535,6 +535,7 @@ namespace PowerConsole
         /// <summary>
         /// Returns the <see cref="TypeCategory"/> value for the specified type.
         /// </summary>
+        /// <param name="type">The type to check.</param>
         /// <returns>A <see cref="TypeCategory"/> value that represents the 
         /// category of the specified <paramref name="type"/>.</returns>
         public static TypeCategory GetTypeCategory(this Type type)
@@ -571,6 +572,18 @@ namespace PowerConsole
                 default:
                     return TypeCategory.Other;
             }
+        }
+
+        /// <summary>
+        /// Returns a tuple that indicates whether the specified type is a 
+        /// number and, if it is, what precise category it belongs to.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <returns>A tuple that indicates the category of the specified <paramref name="type"/>.</returns>
+        public static (bool integral, bool floatingPoint) GetNumberCategory(this Type type)
+        {
+            var category = type.GetTypeCategory();
+            return (category == TypeCategory.IntegralNumber, category == TypeCategory.FloatingPointNumber);
         }
 
         /// <summary>
@@ -633,13 +646,13 @@ namespace PowerConsole
         /// <summary>
         /// Allows only numbers to be entered.
         /// </summary>
-        /// <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
         /// <param name="allowDecimal">true to allow a single decimal-point (period), otherwise false.</param>
         /// <param name="culture">The culture to use. If null, the culture of 
         /// the current thread or <see cref="CultureInfo.InvariantCulture"/> 
         /// will be used.</param>
+        /// <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
         /// <returns>A string that represents the typed number.</returns>
-        public static string ReadNumber(bool allowNegative = true, bool allowDecimal = false, CultureInfo culture = null)
+        public static string ReadNumber(bool allowDecimal = false, CultureInfo culture = null, bool allowNegative = true)
         {
             var sb = new StringBuilder();
             char chr;

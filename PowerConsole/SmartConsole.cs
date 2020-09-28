@@ -925,18 +925,11 @@ namespace PowerConsole
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
         protected virtual T GetValidInput<T>(string message, string validationMessage, Func<T, bool> validator, Func<string, IFormatProvider, T> converter)
         {
-            var category = typeof(T).GetTypeCategory();
-            var isWholeNumber = category == TypeCategory.IntegralNumber;
-            var allowDecimal = category == TypeCategory.FloatingPointNumber;
-            var isNumber = isWholeNumber || allowDecimal;
-            
-            string _ReadLine() => isNumber
-                ? SmartConsoleExtensions.ReadNumber(allowNegative: true, allowDecimal, Culture)
-                : _instream.ReadLine();
-
+            var (integral, floatingPoint) = typeof(T).GetNumberCategory();
+            var cult = Culture;
             var response = _ReadLine();
 
-            if (string.IsNullOrWhiteSpace(response) &&
+            if (string.IsNullOrWhiteSpace(response) && 
                 !string.IsNullOrWhiteSpace(message) && 
                 _history.ContainsKey(message))
             {
@@ -950,11 +943,31 @@ namespace PowerConsole
             if (!hasConstraint && validator != null)
                 validationMessage = ValidationMessages.GetDefaultValidationMessage<T>(ValidationMessages);
 
-            if (!Formatters.TryGetValue(typeof(T), out var provider) && Culture != null)
-                provider = Culture;
+            if (!Formatters.TryGetValue(typeof(T), out var provider) && cult != null)
+                provider = cult;
 
             T result;
 
+            while (_InputIsNotvalid())
+            {
+                if (hasConstraint) WriteError(validationMessage);
+
+                response = _ReadLine();
+            }
+
+            return result;
+
+            string _ReadLine()
+            {
+                return integral || floatingPoint
+                    ? SmartConsoleExtensions.ReadNumber(floatingPoint, cult)
+                    : _instream.ReadLine();
+            }
+
+            bool _InputIsNotvalid() => !_TryConvert() ||
+                (hasConstraint && string.IsNullOrWhiteSpace(response)) ||
+                (hasValidator && !validator(result));
+        
             bool _TryConvert()
             {
                 if (hasConverter)
@@ -964,19 +977,6 @@ namespace PowerConsole
                 }
                 return response.TryConvert(provider, out result);
             }
-
-            bool _InputIsNotvalid() => !_TryConvert() ||
-                (hasConstraint && string.IsNullOrWhiteSpace(response)) ||
-                (hasValidator && !validator(result));
-
-            while (_InputIsNotvalid())
-            {
-                if (hasConstraint)
-                    WriteError(validationMessage);
-                response = _ReadLine();
-            }
-
-            return result;
         }
 
         /// <summary>

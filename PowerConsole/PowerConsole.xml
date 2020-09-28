@@ -1045,8 +1045,17 @@
             <summary>
             Returns the <see cref="T:PowerConsole.TypeCategory"/> value for the specified type.
             </summary>
+            <param name="type">The type to check.</param>
             <returns>A <see cref="T:PowerConsole.TypeCategory"/> value that represents the 
             category of the specified <paramref name="type"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.GetNumberCategory(System.Type)">
+            <summary>
+            Returns a tuple that indicates whether the specified type is a 
+            number and, if it is, what precise category it belongs to.
+            </summary>
+            <param name="type">The type to check.</param>
+            <returns>A tuple that indicates the category of the specified <paramref name="type"/>.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.IsNullable(System.Type,System.Type@)">
             <summary>
@@ -1065,15 +1074,15 @@
             </param>
             <returns>A string.</returns>
         </member>
-        <member name="M:PowerConsole.SmartConsoleExtensions.ReadNumber(System.Boolean,System.Boolean,System.Globalization.CultureInfo)">
+        <member name="M:PowerConsole.SmartConsoleExtensions.ReadNumber(System.Boolean,System.Globalization.CultureInfo,System.Boolean)">
             <summary>
             Allows only numbers to be entered.
             </summary>
-            <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
             <param name="allowDecimal">true to allow a single decimal-point (period), otherwise false.</param>
             <param name="culture">The culture to use. If null, the culture of 
             the current thread or <see cref="P:System.Globalization.CultureInfo.InvariantCulture"/> 
             will be used.</param>
+            <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
             <returns>A string that represents the typed number.</returns>
         </member>
         <member name="T:PowerConsole.TypeCategory">
