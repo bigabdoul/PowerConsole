@@ -229,6 +229,12 @@
             Gets or sets the default responses for "Yes" prompts.
             </summary>
         </member>
+        <member name="P:PowerConsole.SmartConsole.CancelRequested">
+            <summary>
+            Indicates whether the <see cref="E:System.Console.CancelKeyPress"/> event
+            was invoked.
+            </summary>
+        </member>
         <member name="F:PowerConsole.SmartConsole.Default">
             <summary>
             Returns the default instance of the <see cref="T:PowerConsole.SmartConsole"/> class.
@@ -313,6 +319,32 @@
             <param name="converter">A function that converts the user input to the specified type <typeparamref name="T"/>.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsole.PromptYes(System.String,System.String[])">
+            <summary>
+            Writes out a message and collects user input as a boolean where the
+            default response is affirmative (Yes).
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <param name="defaultResponses">
+            Zero or more strings accepted as the default response. If the
+            argument is null or empty, an empty string, "y", and "yes" are 
+            the accepted case-insensitive default responses.
+            </param>
+            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.PromptNo(System.String,System.String[])">
+            <summary>
+            Writes out a message and collects user input as a boolean where the
+            default response is negative (No).
+            </summary>
+            <param name="message">The message to display.</param>
+            <param name="defaultResponses">
+            Zero or more strings accepted as the default response. If the
+            argument is null or empty, an empty string, "n", and "no" are 
+            the accepted case-insensitive default responses.
+            </param>
+            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsole.GetResponse(System.String,System.String,System.Func{System.String,System.Boolean},System.Func{System.String,System.IFormatProvider,System.String})">
             <summary>
             Writes out a message and collects user input as a string.
@@ -347,32 +379,6 @@
             <param name="validator">A function that further restricts or validates user input.</param>
             <returns></returns>
         </member>
-        <member name="M:PowerConsole.SmartConsole.PromptYes(System.String,System.String[])">
-            <summary>
-            Writes out a message and collects user input as a boolean where the
-            default response is affirmative (Yes).
-            </summary>
-            <param name="message">The prompt message to display.</param>
-            <param name="defaultResponses">
-            Zero or more strings accepted as the default response. If the
-            argument is null or empty, an empty string, "y", and "yes" are 
-            the accepted case-insensitive default responses.
-            </param>
-            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
-        </member>
-        <member name="M:PowerConsole.SmartConsole.PromptNo(System.String,System.String[])">
-            <summary>
-            Writes out a message and collects user input as a boolean where the
-            default response is negative (No).
-            </summary>
-            <param name="message">The message to display.</param>
-            <param name="defaultResponses">
-            Zero or more strings accepted as the default response. If the
-            argument is null or empty, an empty string, "n", and "no" are 
-            the accepted case-insensitive default responses.
-            </param>
-            <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
-        </member>
         <member name="M:PowerConsole.SmartConsole.SetResponse``1(System.Action{``0},System.Func{``0,System.Boolean},System.String)">
             <summary>
             Collects user input as a strongly-typed value and passes it to the
@@ -383,33 +389,6 @@
             <param name="validator">A function that further restricts or validates user input.</param>
             <param name="validationMessage">A message to display if the user enters an invalid response.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
-        </member>
-        <member name="M:PowerConsole.SmartConsole.ContinueWhen(System.Boolean)">
-            <summary>
-            Throws a <see cref="T:PowerConsole.ContinuationException"/> if the specified 
-            <paramref name="condition"/> is not true. This is a crucial part
-            of the fluent design of this <see cref="T:PowerConsole.SmartConsole"/> to avoid
-            the next method call under some circumstances. It is recommended to
-            call this method from within a try-catch block with a 
-            <see cref="T:PowerConsole.ContinuationException"/> filter.
-            </summary>
-            <param name="condition">The condition required to continue code execution.</param>
-            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
-        </member>
-        <member name="M:PowerConsole.SmartConsole.GetMaskedInput(System.String)">
-            <summary>
-            Writes out a message and collects a masked user input.
-            <para>
-            Caution: This method only changes the foreground color of
-            <see cref="T:System.Console"/> to be the same as its current background
-            color. This means that the input, although appearing invisible, 
-            may be copied from the console. For password retrieval, use
-            <see cref="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)"/> 
-            or <see cref="M:PowerConsole.SmartConsoleExtensions.ReadSecureString(System.Boolean)"/>.
-            </para>
-            </summary>
-            <param name="message">The prompt message to display.</param>
-            <returns>The string response of the last prompt.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.Write(System.Char)">
             <summary>
@@ -549,7 +528,7 @@
             standard output stream using the value of the <see cref="P:PowerConsole.SmartConsole.ErrorColor"/>
             property.
             </summary>
-            <param name="message">The message to write.</param>
+            <param name="message">The message that describes the error.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.WriteError(System.Exception)">
@@ -587,6 +566,33 @@
             </summary>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsole.ContinueWhen(System.Boolean)">
+            <summary>
+            Throws a <see cref="T:PowerConsole.ContinuationException"/> if the specified 
+            <paramref name="condition"/> is not true. This is a crucial part
+            of the fluent design of this <see cref="T:PowerConsole.SmartConsole"/> to avoid
+            the next method call under some circumstances. It is recommended to
+            call this method from within a try-catch block with a 
+            <see cref="T:PowerConsole.ContinuationException"/> filter.
+            </summary>
+            <param name="condition">The condition required to continue code execution.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.GetMaskedInput(System.String)">
+            <summary>
+            Writes out a message and collects a masked user input.
+            <para>
+            Caution: This method only changes the foreground color of
+            <see cref="T:System.Console"/> to be the same as its current background
+            color. This means that the input, although appearing invisible, 
+            may be copied from the console. For password retrieval, use
+            <see cref="M:PowerConsole.SmartConsoleExtensions.GetSecureInput(PowerConsole.SmartConsole,System.String,System.Boolean)"/> 
+            or <see cref="M:PowerConsole.SmartConsoleExtensions.ReadSecureString(System.Boolean)"/>.
+            </para>
+            </summary>
+            <param name="message">The prompt message to display.</param>
+            <returns>The string response of the last prompt.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsole.Recall(System.String)">
             <summary>
             Prints the history of all prompts.
@@ -600,6 +606,17 @@
             </summary>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsole.OnCancel(System.Action{PowerConsole.SmartConsole,System.ConsoleCancelEventArgs})">
+            <summary>
+            Adds the specified action to the collection of handlers that listen
+            for the <see cref="E:System.Console.CancelKeyPress"/> event. This is a 
+            convenient way to add a handler for the <see cref="E:System.Console.CancelKeyPress"/>
+            event without breaking the fluent nature of the <see cref="T:PowerConsole.SmartConsole"/>.
+            </summary>
+            <param name="action">The action to add to the collection.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="action"/> is null.</exception>
+        </member>
         <member name="M:PowerConsole.SmartConsole.ReadKey(System.Boolean)">
             <summary>
             Obtains the next character or function key pressed by the user.
@@ -609,6 +626,15 @@
             key in the console window. true to not display the pressed key; 
             otherwise, false.</param>
             <returns>See <see cref="M:System.Console.ReadKey(System.Boolean)"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.Catch(System.Action{PowerConsole.SmartConsole,System.UnhandledExceptionEventArgs})">
+            <summary>
+            Adds an anonymous <see cref="T:System.UnhandledExceptionEventHandler"/> to
+            the current <see cref="E:System.AppDomain.UnhandledException"/> event.
+            This method acts a global error handler for the current application.
+            </summary>
+            <param name="handler"></param>
+            <returns></returns>
         </member>
         <member name="M:PowerConsole.SmartConsole.SetTitle(System.String)">
             <summary>
@@ -722,6 +748,17 @@
             </summary>
             <param name="message">The prompt message.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsole.AddCancelAction(System.Action{PowerConsole.SmartConsole,System.ConsoleCancelEventArgs})">
+            <summary>
+            Adds the specified action to the collection of handlers that listen
+            for the <see cref="E:System.Console.CancelKeyPress"/> event, which is 
+            automatically added if none exists. You must explicitly unsubscribe
+            from the <see cref="E:System.Console.CancelKeyPress"/> event to stop 
+            receiving notifications.
+            </summary>
+            <param name="action">The action to add to the collection.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="action"/> is null.</exception>
         </member>
         <member name="T:PowerConsole.SmartConsoleExtensions">
             <summary>

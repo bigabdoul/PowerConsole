@@ -24,6 +24,7 @@ namespace PowerConsole
         private ConsoleColor _currentForegroundColor;
         private ConsoleColor _backgroundColor;
         private bool? _storePrompts;
+        private HashSet<Action<SmartConsole, ConsoleCancelEventArgs>> _cancelActions;
 
         #endregion
 
@@ -159,8 +160,16 @@ namespace PowerConsole
         /// Gets or sets the default responses for "Yes" prompts.
         /// </summary>
         public static string[] DefaultYesResponses { get; set; } = { string.Empty, "y", "yes" };
+        
+        /// <summary>
+        /// Indicates whether the <see cref="Console.CancelKeyPress"/> event
+        /// was invoked.
+        /// </summary>
+        public bool CancelRequested { get; private set; }
 
         #endregion
+
+        #region Prompt
 
         /// <summary>
         /// Returns the default instance of the <see cref="SmartConsole"/> class.
@@ -227,7 +236,7 @@ namespace PowerConsole
         /// <param name="message">The prompt message to display.</param>
         /// <param name="store">true to store the message into the prompt history, otherwise false.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public SmartConsole PromptLine(string message, bool store) 
+        public SmartConsole PromptLine(string message, bool store)
             => PromptLine(message, null, store);
 
         /// <summary>
@@ -236,7 +245,7 @@ namespace PowerConsole
         /// <param name="message">The prompt message to display.</param>
         /// <param name="historyLabel">An alternative message to use for history replay.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public SmartConsole PromptLine(string message, string historyLabel) 
+        public SmartConsole PromptLine(string message, string historyLabel)
             => PromptLine(message, historyLabel, store: false);
 
         /// <summary>
@@ -279,6 +288,38 @@ namespace PowerConsole
         }
 
         /// <summary>
+        /// Writes out a message and collects user input as a boolean where the
+        /// default response is affirmative (Yes).
+        /// </summary>
+        /// <param name="message">The prompt message to display.</param>
+        /// <param name="defaultResponses">
+        /// Zero or more strings accepted as the default response. If the
+        /// argument is null or empty, an empty string, "y", and "yes" are 
+        /// the accepted case-insensitive default responses.
+        /// </param>
+        /// <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        public bool PromptYes(string message, params string[] defaultResponses)
+            => ConvertResponse(message, (input, _) => YesDefault(input, defaultResponses));
+
+        /// <summary>
+        /// Writes out a message and collects user input as a boolean where the
+        /// default response is negative (No).
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="defaultResponses">
+        /// Zero or more strings accepted as the default response. If the
+        /// argument is null or empty, an empty string, "n", and "no" are 
+        /// the accepted case-insensitive default responses.
+        /// </param>
+        /// <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
+        public bool PromptNo(string message, params string[] defaultResponses)
+            => ConvertResponse(message, (input, _) => NoDefault(input, defaultResponses));
+
+        #endregion
+
+        #region GetResponse / SetResponse / ConvertResponse
+
+        /// <summary>
         /// Writes out a message and collects user input as a string.
         /// The response is not stored into the prompt history.
         /// </summary>
@@ -288,7 +329,7 @@ namespace PowerConsole
         /// <param name="formatter"></param>
         /// <returns>The string response of the last prompt.</returns>
         public string GetResponse(string message, string validationMessage = null, Func<string, bool> validator = null,
-                                  Func<string, IFormatProvider, string> formatter = null) 
+                                  Func<string, IFormatProvider, string> formatter = null)
             => GetResponse<string>(message, validationMessage, validator, formatter);
 
         /// <summary>
@@ -335,34 +376,6 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// Writes out a message and collects user input as a boolean where the
-        /// default response is affirmative (Yes).
-        /// </summary>
-        /// <param name="message">The prompt message to display.</param>
-        /// <param name="defaultResponses">
-        /// Zero or more strings accepted as the default response. If the
-        /// argument is null or empty, an empty string, "y", and "yes" are 
-        /// the accepted case-insensitive default responses.
-        /// </param>
-        /// <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
-        public bool PromptYes(string message, params string[] defaultResponses)
-            => ConvertResponse(message, (input, _) => YesDefault(input, defaultResponses));
-
-        /// <summary>
-        /// Writes out a message and collects user input as a boolean where the
-        /// default response is negative (No).
-        /// </summary>
-        /// <param name="message">The message to display.</param>
-        /// <param name="defaultResponses">
-        /// Zero or more strings accepted as the default response. If the
-        /// argument is null or empty, an empty string, "n", and "no" are 
-        /// the accepted case-insensitive default responses.
-        /// </param>
-        /// <returns>true if any of the <paramref name="defaultResponses"/> is entered, otherwise false.</returns>
-        public bool PromptNo(string message, params string[] defaultResponses)
-            => ConvertResponse(message, (input, _) => NoDefault(input, defaultResponses));
-
-        /// <summary>
         /// Collects user input as a strongly-typed value and passes it to the
         /// specified <paramref name="action"/>.
         /// </summary>
@@ -383,43 +396,9 @@ namespace PowerConsole
             return this;
         }
 
-        /// <summary>
-        /// Throws a <see cref="ContinuationException"/> if the specified 
-        /// <paramref name="condition"/> is not true. This is a crucial part
-        /// of the fluent design of this <see cref="SmartConsole"/> to avoid
-        /// the next method call under some circumstances. It is recommended to
-        /// call this method from within a try-catch block with a 
-        /// <see cref="ContinuationException"/> filter.
-        /// </summary>
-        /// <param name="condition">The condition required to continue code execution.</param>
-        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
-        public SmartConsole ContinueWhen(bool condition)
-            => !condition ? throw new ContinuationException() : this;
+        #endregion
 
-        /// <summary>
-        /// Writes out a message and collects a masked user input.
-        /// <para>
-        /// Caution: This method only changes the foreground color of
-        /// <see cref="Console"/> to be the same as its current background
-        /// color. This means that the input, although appearing invisible, 
-        /// may be copied from the console. For password retrieval, use
-        /// <see cref="SmartConsoleExtensions.GetSecureInput(SmartConsole, string, bool)"/> 
-        /// or <see cref="SmartConsoleExtensions.ReadSecureString(bool)"/>.
-        /// </para>
-        /// </summary>
-        /// <param name="message">The prompt message to display.</param>
-        /// <returns>The string response of the last prompt.</returns>
-        public virtual string GetMaskedInput(string message)
-        {
-            _outstream.Write(message);
-
-            var result = SetForegroundColor(Console.BackgroundColor)
-                .GetInput<string>(message)
-                .LastPrompt.As<string>();
-
-            RestoreForegroundColor();
-            return result;
-        }
+        #region Write...
 
         /// <summary>
         /// Writes out a character.
@@ -635,7 +614,7 @@ namespace PowerConsole
         /// standard output stream using the value of the <see cref="ErrorColor"/>
         /// property.
         /// </summary>
-        /// <param name="message">The message to write.</param>
+        /// <param name="message">The message that describes the error.</param>
         /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
         public SmartConsole WriteError(string message)
         {
@@ -653,7 +632,7 @@ namespace PowerConsole
         {
             var sb = new StringBuilder(error.Message);
             var inner = error.InnerException;
-            
+
             while (inner != null)
             {
                 sb.AppendLine(inner.Message);
@@ -664,6 +643,8 @@ namespace PowerConsole
             return WriteError(sb.ToString());
         }
 
+        #endregion
+        
         /// <summary>
         /// Sets the background color of the system's <see cref="Console"/>
         /// to the specified <paramref name="color"/>.
@@ -712,6 +693,46 @@ namespace PowerConsole
 
         #endregion
 
+        #region Misc
+
+        /// <summary>
+        /// Throws a <see cref="ContinuationException"/> if the specified 
+        /// <paramref name="condition"/> is not true. This is a crucial part
+        /// of the fluent design of this <see cref="SmartConsole"/> to avoid
+        /// the next method call under some circumstances. It is recommended to
+        /// call this method from within a try-catch block with a 
+        /// <see cref="ContinuationException"/> filter.
+        /// </summary>
+        /// <param name="condition">The condition required to continue code execution.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public SmartConsole ContinueWhen(bool condition)
+            => !condition ? throw new ContinuationException() : this;
+
+        /// <summary>
+        /// Writes out a message and collects a masked user input.
+        /// <para>
+        /// Caution: This method only changes the foreground color of
+        /// <see cref="Console"/> to be the same as its current background
+        /// color. This means that the input, although appearing invisible, 
+        /// may be copied from the console. For password retrieval, use
+        /// <see cref="SmartConsoleExtensions.GetSecureInput(SmartConsole, string, bool)"/> 
+        /// or <see cref="SmartConsoleExtensions.ReadSecureString(bool)"/>.
+        /// </para>
+        /// </summary>
+        /// <param name="message">The prompt message to display.</param>
+        /// <returns>The string response of the last prompt.</returns>
+        public virtual string GetMaskedInput(string message)
+        {
+            _outstream.Write(message);
+
+            var result = SetForegroundColor(Console.BackgroundColor)
+                .GetInput<string>(message)
+                .LastPrompt.As<string>();
+
+            RestoreForegroundColor();
+            return result;
+        }
+
         /// <summary>
         /// Prints the history of all prompts.
         /// </summary>
@@ -735,6 +756,21 @@ namespace PowerConsole
         }
 
         /// <summary>
+        /// Adds the specified action to the collection of handlers that listen
+        /// for the <see cref="Console.CancelKeyPress"/> event. This is a 
+        /// convenient way to add a handler for the <see cref="Console.CancelKeyPress"/>
+        /// event without breaking the fluent nature of the <see cref="SmartConsole"/>.
+        /// </summary>
+        /// <param name="action">The action to add to the collection.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        public virtual SmartConsole OnCancel(Action<SmartConsole, ConsoleCancelEventArgs> action)
+        {
+            AddCancelAction(action);
+            return this;
+        }
+
+        /// <summary>
         /// Obtains the next character or function key pressed by the user.
         /// The pressed key is optionally displayed in the console window.
         /// </summary>
@@ -746,6 +782,21 @@ namespace PowerConsole
         {
             return Console.ReadKey(intercept);
         }
+
+        /// <summary>
+        /// Adds an anonymous <see cref="UnhandledExceptionEventHandler"/> to
+        /// the current <see cref="AppDomain.UnhandledException"/> event.
+        /// This method acts a global error handler for the current application.
+        /// </summary>
+        /// <param name="handler"></param>
+        /// <returns></returns>
+        public SmartConsole Catch(Action<SmartConsole, UnhandledExceptionEventArgs> handler)
+        {
+            AppDomain.CurrentDomain.UnhandledException += (sender, e) => handler(this, e);
+            return this;
+        }
+
+        #endregion
 
         #region property setters
 
@@ -959,6 +1010,8 @@ namespace PowerConsole
 
             string _ReadLine()
             {
+                if (CancelRequested) throw new OperationCanceledException();
+
                 return integral || floatingPoint
                     ? SmartConsoleExtensions.ReadNumber(floatingPoint, cult)
                     : _instream.ReadLine();
@@ -1004,6 +1057,46 @@ namespace PowerConsole
             if (_history.ContainsKey(message))
                 _outstream.Write($"[{_history[message].Response}] ");
             return this;
+        }
+
+        /// <summary>
+        /// Adds the specified action to the collection of handlers that listen
+        /// for the <see cref="Console.CancelKeyPress"/> event, which is 
+        /// automatically added if none exists. You must explicitly unsubscribe
+        /// from the <see cref="Console.CancelKeyPress"/> event to stop 
+        /// receiving notifications.
+        /// </summary>
+        /// <param name="action">The action to add to the collection.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+        protected virtual void AddCancelAction(Action<SmartConsole, ConsoleCancelEventArgs> action)
+        {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
+            if (_cancelActions == null)
+            {
+                lock (this)
+                {
+                    if (_cancelActions == null)
+                    {
+                        Console.CancelKeyPress += OnCancelKeyPress;
+                        _cancelActions = new HashSet<Action<SmartConsole, ConsoleCancelEventArgs>>();
+                    }
+                }
+            }
+
+            _cancelActions.Add(action);
+        }
+
+        private void OnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            CancelRequested = true;
+
+            // simulate a multi-cast delegate to invoke the list of actions
+            foreach (var action in _cancelActions)
+            {
+                action.Invoke(this, e);
+            }
         }
 
         private static bool YesDefault(string input, params string[] defaultResponses)

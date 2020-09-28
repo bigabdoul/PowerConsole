@@ -22,7 +22,35 @@ namespace PowerConsole.Test
                     "\tAuthor:\t\t Abdourahamane Kaba",
                     "\tLicense:\t MIT",
                     "\tCopyright:\t (c) 2020 Karfamsoft\n")
-                .RestoreForegroundColor();
+                .RestoreForegroundColor()
+
+                // this event handler intercepts the 'CTRL+C' and 'CTRL+Break'
+                // key combinations; normally, this abruptly terminates the 
+                // application but with this handler you are given a chance
+                // to clean up resources
+                .OnCancel((sender, e) =>
+                {
+                    sender.WriteWarning("\n\tTerminating the application...\n");
+
+                    // e.Cancel == true leaves the app running, otherwise it 
+                    // terminates immediately;
+                    e.Cancel = true;
+
+                    // do whatever clean up is required by the app...
+                    
+                    // and then explicitly quit with Environment.Exit(int);
+                    // if you don't quit explicitly, an OperationCanceledException
+                    // is thrown on the next prompt attempt
+                    // Environment.Exit(1);
+                })
+                .Catch((sender, e) =>
+                {
+                    sender.Write("\n\t")
+                        .WriteError(e.ExceptionObject as Exception ?? new Exception(e.ExceptionObject?.ToString()))
+                        .WriteLine();
+
+                    Environment.Exit(1);
+                });
 
             if (!console.PromptNo("\tWould you like to define a specific culture for this session? (yes/No) "))
             {
@@ -77,10 +105,6 @@ namespace PowerConsole.Test
                         if (console.PromptYes("\tQuit application? (Y/n) "))
                             break;
                         console.RestoreForegroundColor();
-                    }
-                    catch (Exception ex)
-                    {
-                        console.WriteError(ex);
                     }
                 }
             }
