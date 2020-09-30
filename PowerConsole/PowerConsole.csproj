@@ -13,15 +13,15 @@
     <RepositoryUrl>https://github.com/bigabdoul/PowerConsole</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>console, standard, io, c#, .net</PackageTags>
-    <PackageReleaseNotes>More enhancements and fluent APIs.
-Write multiple lines using a collection of objects reducing the number of calls to WriteLine().
-Generic exception filters on TrySetResponse methods.
-Accept only numbers with culture-aware formats.
-Allow or block negative and decimal numbers using native digits.
-Abundant sample codes on Github.</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for timers:
+- SetInterval
+- SetTimeout
+- ClearInterval
+- ClearTimeout</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

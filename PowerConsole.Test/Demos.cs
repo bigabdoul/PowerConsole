@@ -37,7 +37,9 @@
                         e.Console.WriteLine();
                     }
 
-                    e.Console.Write($"\rFirst timer tick: ", System.ConsoleColor.White).WriteInfo(e.TicksToSecondsElapsed());
+                    e.Console
+                    .Write($"\rFirst timer tick: ", System.ConsoleColor.White)
+                    .WriteInfo(e.TicksToSecondsElapsed());
 
                     if (e.Ticks > 4)
                     {
