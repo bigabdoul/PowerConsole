@@ -41,17 +41,39 @@ namespace PowerConsole.Test
 
                 .SetInterval(e =>
                 {
-                    e.Console.WriteInfo($"\n\tInterval tick: {e.Ticks}");
-
-                    if (e.Ticks > 4)
+                    if (e.Ticks == 1)
                     {
-                        e.Timer.Stop();
-
-                        // we could remove the previous timeout:
-                        // e.Console.ClearTimeout("SampleTimeout");
+                        // write a new line
+                        e.Console.WriteInfo($"\n\tInterval tick: {e.Ticks}");
                     }
+                    else
+                    {
+                        // overwrite the previous output (write on the same line)
+                        e.Console.WriteInfo($"\r\tInterval tick: {e.Ticks}");
+                    
+                        if (e.Ticks > 4)
+                        {
+                            // instructs the timer manager to clean it up
+                            e.DisposeTimer();
 
+                            // we could remove the previous timeout:
+                            // e.Console.ClearTimeout("SampleTimeout");
+                        }
+                    }
                 }, millisecondsInterval: 1000, "EverySecond")
+
+                // we can add as many timers as we want (or the computer's resources permit)
+                .SetInterval(e =>
+                {
+                    if (e.Ticks == 5)
+                    {
+                        e.DisposeTimer();
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine($"Second timer tick: {e.Ticks}");
+                    }
+                }, 2000)
 
                 // this event handler intercepts the 'CTRL+C' and 'CTRL+Break'
                 // key combinations; normally, this abruptly terminates the 

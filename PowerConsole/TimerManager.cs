@@ -103,7 +103,7 @@ namespace PowerConsole
         {
             try
             {
-                _callback.Invoke(new TimerEventArgs(_console, _timer, e.SignalTime, ++_ticks));
+                _callback.Invoke(new TimerEventArgs(_console, _timer, e.SignalTime, ++_ticks, Name));
             }
             finally
             {
@@ -120,7 +120,7 @@ namespace PowerConsole
             {
                 if (disposing)
                 {
-                    _timer.Enabled = false;
+                    _timer.Stop();
                     _timer.Elapsed -= TimerElapsed;
                     _timer.Dispose();
                 }

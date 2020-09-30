@@ -1173,7 +1173,7 @@
             Represents an object that encapsulates data related to a timer event.
             </summary>
         </member>
-        <member name="M:PowerConsole.TimerEventArgs.#ctor(PowerConsole.SmartConsole,System.Timers.Timer,System.DateTime,System.UInt64)">
+        <member name="M:PowerConsole.TimerEventArgs.#ctor(PowerConsole.SmartConsole,System.Timers.Timer,System.DateTime,System.UInt64,System.String)">
             <summary>
             Initializes a new instance of the <see cref="T:PowerConsole.TimerEventArgs"/> class
             using the specified parameters.
@@ -1182,6 +1182,7 @@
             <param name="timer">An instance of a <see cref="P:PowerConsole.TimerEventArgs.Timer"/>.</param>
             <param name="signalTime">The date and time when the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.</param>
             <param name="ticks">The number of times the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.</param>
+            <param name="name">The name of the timer reference.</param>
         </member>
         <member name="P:PowerConsole.TimerEventArgs.Console">
             <summary>
@@ -1202,6 +1203,13 @@
             <summary>
             Gets the number of times the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.
             </summary>
+        </member>
+        <member name="M:PowerConsole.TimerEventArgs.DisposeTimer">
+            <summary>
+            Instructs the internal TimerManager to remove the reference to the 
+            <see cref="P:PowerConsole.TimerEventArgs.Timer"/> and dispose off all related objects.
+            </summary>
+            <returns>true if the reference has been removed, otherwise false.</returns>
         </member>
         <member name="T:PowerConsole.TypeCategory">
             <summary>

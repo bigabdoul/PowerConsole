@@ -8,6 +8,8 @@ namespace PowerConsole
     /// </summary>
     public sealed class TimerEventArgs
     {
+        private readonly string _name;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TimerEventArgs"/> class
         /// using the specified parameters.
@@ -16,12 +18,14 @@ namespace PowerConsole
         /// <param name="timer">An instance of a <see cref="Timer"/>.</param>
         /// <param name="signalTime">The date and time when the <see cref="Timer.Elapsed"/> event was raised.</param>
         /// <param name="ticks">The number of times the <see cref="Timer.Elapsed"/> event was raised.</param>
-        public TimerEventArgs(SmartConsole console, Timer timer, DateTime signalTime, ulong ticks)
+        /// <param name="name">The name of the timer reference.</param>
+        public TimerEventArgs(SmartConsole console, Timer timer, DateTime signalTime, ulong ticks, string name)
         {
             Console = console;
             Timer = timer;
             SignalTime = signalTime;
             Ticks = ticks;
+            _name = name;
         }
 
         /// <summary>
@@ -43,5 +47,12 @@ namespace PowerConsole
         /// Gets the number of times the <see cref="Timer.Elapsed"/> event was raised.
         /// </summary>
         public ulong Ticks { get; }
+
+        /// <summary>
+        /// Instructs the internal TimerManager to remove the reference to the 
+        /// <see cref="Timer"/> and dispose off all related objects.
+        /// </summary>
+        /// <returns>true if the reference has been removed, otherwise false.</returns>
+        public bool DisposeTimer() => TimerManager.Remove(_name);
     }
 }
