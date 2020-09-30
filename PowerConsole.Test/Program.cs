@@ -24,6 +24,35 @@ namespace PowerConsole.Test
                     "\tCopyright:\t (c) 2020 Karfamsoft\n")
                 .RestoreForegroundColor()
 
+                // SetTimeout is called only once after the provided delay and
+                // is automatically removed by the TimerManager class
+                .SetTimeout(e =>
+                {
+                    // this action is called back after 10 seconds; the name
+                    // of the time out is useful should we want to clear it
+                    // before this action gets executed
+                    e.Console.Write("\n\t").WriteError("A timeout occured!");
+                    
+                    // the next statement will make the current instance of 
+                    // SmartConsole throw an exception on the next prompt attempt
+                    // sender.CancelRequested = true;
+
+                }, millisecondsDelay: 10000d, name: "SampleTimeout")
+
+                .SetInterval(e =>
+                {
+                    e.Console.WriteInfo($"\n\tInterval tick: {e.Ticks}");
+
+                    if (e.Ticks > 4)
+                    {
+                        e.Timer.Stop();
+
+                        // we could remove the previous timeout:
+                        // e.Console.ClearTimeout("SampleTimeout");
+                    }
+
+                }, millisecondsInterval: 1000, "EverySecond")
+
                 // this event handler intercepts the 'CTRL+C' and 'CTRL+Break'
                 // key combinations; normally, this abruptly terminates the 
                 // application but with this handler you are given a chance

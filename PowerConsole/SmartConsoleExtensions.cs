@@ -17,7 +17,7 @@ namespace PowerConsole
         #region fields
 
         const int ENTER = 13, BACKSPACE = 8, CTRL_BACKSPACE = 127;
-        
+
         private static readonly Dictionary<string, char[]> NativeDigitsCache =
             new Dictionary<string, char[]>();
 
@@ -148,7 +148,7 @@ namespace PowerConsole
         /// <returns>true if the <see cref="SmartConsole.Prompts"/> collection contains a match, otherwise false.</returns>
         public static bool FindPrompt(this SmartConsole console, string idOrMessage, out Prompt result)
         {
-            result = 
+            result =
                 console.Prompts.FirstOrDefault(p => p.Id == idOrMessage) ??
                 console.Prompts.FirstOrDefault(p => p.Message == idOrMessage);
             return result != null;
@@ -477,6 +477,66 @@ namespace PowerConsole
         public static SmartConsole Then(this SmartConsole console, Action<SmartConsole> action)
         {
             action.Invoke(console);
+            return console;
+        }
+
+        /// <summary>
+        /// Creates a timer that executes the specified <paramref name="callback"/>
+        /// at a regular interval specified by <paramref name="millisecondsInterval"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="callback">The action to invoke on each timer tick.</param>
+        /// <param name="millisecondsInterval">The number of milliseconds that 
+        /// should elapse between two consecutive ticks.</param>
+        /// <param name="name">The name of the associated timer. Useful when 
+        /// calling <see cref="ClearInterval(SmartConsole, string)"/>.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole SetInterval(this SmartConsole console, Action<TimerEventArgs> callback, double millisecondsInterval, string name = null)
+        {
+            TimerManager.Add(console, callback, millisecondsInterval, name, repeat: true);
+            return console;
+        }
+
+        /// <summary>
+        /// Creates a timer that executes the specified <paramref name="callback"/>
+        /// once after the delay specified by <paramref name="millisecondsDelay"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="callback">The action to invoke on each timer tick.</param>
+        /// <param name="millisecondsDelay">The number of milliseconds to wait 
+        /// before calling the callback.</param>
+        /// <param name="name">The name of the associated timer. Useful when 
+        /// calling <see cref="ClearTimeout(SmartConsole, string)"/>.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole SetTimeout(this SmartConsole console, Action<TimerEventArgs> callback, double millisecondsDelay, string name = null)
+        {
+            TimerManager.Add(console, callback, millisecondsDelay, name, repeat: false);
+            return console;
+        }
+
+        /// <summary>
+        /// Disposes off a timer previously created with the method
+        /// <see cref="SetInterval(SmartConsole, Action{TimerEventArgs}, double, string)"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="name">The name of the associated timer to dispose.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole ClearInterval(this SmartConsole console, string name)
+        {
+            TimerManager.Remove(name);
+            return console;
+        }
+
+        /// <summary>
+        /// Disposes off a timer previously created with the method
+        /// <see cref="SetTimeout(SmartConsole, Action{TimerEventArgs}, double, string)"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="name">The name of the associated timer to dispose.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole ClearTimeout(this SmartConsole console, string name)
+        {
+            TimerManager.Remove(name);
             return console;
         }
 

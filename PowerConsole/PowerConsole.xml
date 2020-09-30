@@ -231,8 +231,9 @@
         </member>
         <member name="P:PowerConsole.SmartConsole.CancelRequested">
             <summary>
-            Indicates whether the <see cref="E:System.Console.CancelKeyPress"/> event
-            was invoked.
+            Gets or sets a value that indicates whether the a cancellation has
+            been requested, either through the <see cref="E:System.Console.CancelKeyPress"/>
+            event, or by just setting this property's value to true.
             </summary>
         </member>
         <member name="F:PowerConsole.SmartConsole.Default">
@@ -1049,6 +1050,50 @@
             <param name="action">The delegate to invoke.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.SetInterval(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)">
+            <summary>
+            Creates a timer that executes the specified <paramref name="callback"/>
+            at a regular interval specified by <paramref name="millisecondsInterval"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="callback">The action to invoke on each timer tick.</param>
+            <param name="millisecondsInterval">The number of milliseconds that 
+            should elapse between two consecutive ticks.</param>
+            <param name="name">The name of the associated timer. Useful when 
+            calling <see cref="M:PowerConsole.SmartConsoleExtensions.ClearInterval(PowerConsole.SmartConsole,System.String)"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.SetTimeout(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)">
+            <summary>
+            Creates a timer that executes the specified <paramref name="callback"/>
+            once after the delay specified by <paramref name="millisecondsDelay"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="callback">The action to invoke on each timer tick.</param>
+            <param name="millisecondsDelay">The number of milliseconds to wait 
+            before calling the callback.</param>
+            <param name="name">The name of the associated timer. Useful when 
+            calling <see cref="M:PowerConsole.SmartConsoleExtensions.ClearTimeout(PowerConsole.SmartConsole,System.String)"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.ClearInterval(PowerConsole.SmartConsole,System.String)">
+            <summary>
+            Disposes off a timer previously created with the method
+            <see cref="M:PowerConsole.SmartConsoleExtensions.SetInterval(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="name">The name of the associated timer to dispose.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.ClearTimeout(PowerConsole.SmartConsole,System.String)">
+            <summary>
+            Disposes off a timer previously created with the method
+            <see cref="M:PowerConsole.SmartConsoleExtensions.SetTimeout(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="name">The name of the associated timer to dispose.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.Result``1(PowerConsole.SmartConsole,System.Func{``0})">
             <summary>
             Invokes the specified delegate function and returns its result.
@@ -1122,6 +1167,41 @@
             will be used.</param>
             <param name="allowNegative">true to allow negative numbers, otherwise allow only positive numbers.</param>
             <returns>A string that represents the typed number.</returns>
+        </member>
+        <member name="T:PowerConsole.TimerEventArgs">
+            <summary>
+            Represents an object that encapsulates data related to a timer event.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.TimerEventArgs.#ctor(PowerConsole.SmartConsole,System.Timers.Timer,System.DateTime,System.UInt64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:PowerConsole.TimerEventArgs"/> class
+            using the specified parameters.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="timer">An instance of a <see cref="P:PowerConsole.TimerEventArgs.Timer"/>.</param>
+            <param name="signalTime">The date and time when the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.</param>
+            <param name="ticks">The number of times the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.</param>
+        </member>
+        <member name="P:PowerConsole.TimerEventArgs.Console">
+            <summary>
+            Gets the console that registered the timer.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.TimerEventArgs.Timer">
+            <summary>
+            Gets the timer that raised the current event.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.TimerEventArgs.SignalTime">
+            <summary>
+            Gets the date and time when the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.
+            </summary>
+        </member>
+        <member name="P:PowerConsole.TimerEventArgs.Ticks">
+            <summary>
+            Gets the number of times the <see cref="E:System.Timers.Timer.Elapsed"/> event was raised.
+            </summary>
         </member>
         <member name="T:PowerConsole.TypeCategory">
             <summary>

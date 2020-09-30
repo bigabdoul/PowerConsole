@@ -162,10 +162,11 @@ namespace PowerConsole
         public static string[] DefaultYesResponses { get; set; } = { string.Empty, "y", "yes" };
         
         /// <summary>
-        /// Indicates whether the <see cref="Console.CancelKeyPress"/> event
-        /// was invoked.
+        /// Gets or sets a value that indicates whether the a cancellation has
+        /// been requested, either through the <see cref="Console.CancelKeyPress"/>
+        /// event, or by just setting this property's value to true.
         /// </summary>
-        public bool CancelRequested { get; private set; }
+        public bool CancelRequested { get; set; }
 
         #endregion
 
