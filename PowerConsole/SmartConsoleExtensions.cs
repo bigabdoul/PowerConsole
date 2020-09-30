@@ -468,11 +468,12 @@ namespace PowerConsole
         }
 
         /// <summary>
-        /// 
+        /// Invokes the specified <paramref name="action"/> and returns a reference
+        /// to the current <see cref="SmartConsole"/> instance.
         /// </summary>
-        /// <param name="console"></param>
-        /// <param name="action"></param>
-        /// <returns></returns>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="action">The delegate to invoke.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
         public static SmartConsole Then(this SmartConsole console, Action<SmartConsole> action)
         {
             action.Invoke(console);
