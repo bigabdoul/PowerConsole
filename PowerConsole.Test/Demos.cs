@@ -4,6 +4,79 @@
     {
         static readonly SmartConsole MyConsole = SmartConsole.Default;
 
+        public static void RunTimers()
+        {
+            // CAUTION: SmartConsole is not thread safe!
+            // Spawn multiple timers carefully when accessing
+            // simultaneously members of the SmartConsole class.
+
+            MyConsole.WriteInfo("\nWelcome to the Timers demo!\n")
+
+                // SetTimeout is called only once after the provided delay and
+                // is automatically removed by the TimerManager class
+                .SetTimeout(e =>
+                {
+                    // this action is called back after 10 seconds; the name
+                    // of the time out is useful should we want to clear it
+                    // before this action gets executed
+                    e.Console.Write("\n").WriteError("Time out occured after 5 seconds! " +
+                        "Timer has been automatically disposed.\n");
+
+                    // the next statement will make the current instance of 
+                    // SmartConsole throw an exception on the next prompt attempt
+                    // e.Console.CancelRequested = true;
+
+                    // use 5500 or any other value not multiple of 1000 to 
+                    // reduce write collision risk with the next timer
+                }, millisecondsDelay: 5500, name: "SampleTimeout")
+
+                .SetInterval(e =>
+                {
+                    if (e.Ticks == 1)
+                    {
+                        e.Console.WriteLine();
+                    }
+
+                    e.Console.Write($"\rFirst timer tick: ", System.ConsoleColor.White).WriteInfo(e.TicksToSecondsElapsed());
+
+                    if (e.Ticks > 4)
+                    {
+                        // we could remove the previous timeout:
+                        // e.Console.ClearTimeout("SampleTimeout");
+                    }
+
+                }, millisecondsInterval: 1000, "EverySecond")
+
+                // we can add as many timers as we want (or the computer's resources permit)
+                .SetInterval(e =>
+                {
+                    if (e.Ticks == 1 || e.Ticks == 3) // 1.5 or 4.5 seconds to avoid write collision
+                    {
+                        e.Console.WriteSuccess("\nSecond timer is active...\n");
+                    }
+                    else if (e.Ticks == 5)
+                    {
+                        e.Console.WriteWarning("\nSecond timer is disposing...\n");
+
+                        // doesn't dispose the timer
+                        // e.Timer.Stop();
+
+                        // clean up if we no longer need it
+                        e.DisposeTimer();
+                    }
+                    else
+                    {
+                        System.Diagnostics.Trace.WriteLine($"Second timer tick: {e.Ticks}");
+                    }
+                }, 1500)
+                .Prompt("\nPress Enter to stop the timers: ")
+                
+                // makes sure that any remaining timer is disposed off
+                .ClearTimers()
+
+                .WriteSuccess("Timers cleared!\n");
+        }
+
         public static void ReadPassword()
         {
             try

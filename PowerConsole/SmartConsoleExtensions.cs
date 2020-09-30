@@ -541,6 +541,19 @@ namespace PowerConsole
         }
 
         /// <summary>
+        /// Disposes off all timers previously created with either of the methods
+        /// <see cref="SetTimeout(SmartConsole, Action{TimerEventArgs}, double, string)"/>
+        /// and <see cref="SetInterval(SmartConsole, Action{TimerEventArgs}, double, string)"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole ClearTimers(this SmartConsole console)
+        {
+            TimerManager.Clear();
+            return console;
+        }
+
+        /// <summary>
         /// Invokes the specified delegate function and returns its result.
         /// </summary>
         /// <typeparam name="T">The delegate's return type.</typeparam>

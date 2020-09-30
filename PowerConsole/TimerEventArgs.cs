@@ -54,5 +54,15 @@ namespace PowerConsole
         /// </summary>
         /// <returns>true if the reference has been removed, otherwise false.</returns>
         public bool DisposeTimer() => TimerManager.Remove(_name);
+
+        /// <summary>
+        /// Returns <see cref="Ticks"/> formatted as "hh:mm:ss"
+        /// representing the number of seconds elapsed.
+        /// </summary>
+        /// <returns>A formatted string that represents the time that elapsed.</returns>
+        public string TicksToSecondsElapsed()
+        {
+            return $"{TimeSpan.FromSeconds(Ticks):hh\\:mm\\:ss}";
+        }
     }
 }

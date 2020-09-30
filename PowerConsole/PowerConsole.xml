@@ -1094,6 +1094,15 @@
             <param name="name">The name of the associated timer to dispose.</param>
             <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.ClearTimers(PowerConsole.SmartConsole)">
+            <summary>
+            Disposes off all timers previously created with either of the methods
+            <see cref="M:PowerConsole.SmartConsoleExtensions.SetTimeout(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)"/>
+            and <see cref="M:PowerConsole.SmartConsoleExtensions.SetInterval(PowerConsole.SmartConsole,System.Action{PowerConsole.TimerEventArgs},System.Double,System.String)"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.Result``1(PowerConsole.SmartConsole,System.Func{``0})">
             <summary>
             Invokes the specified delegate function and returns its result.
@@ -1210,6 +1219,13 @@
             <see cref="P:PowerConsole.TimerEventArgs.Timer"/> and dispose off all related objects.
             </summary>
             <returns>true if the reference has been removed, otherwise false.</returns>
+        </member>
+        <member name="M:PowerConsole.TimerEventArgs.TicksToSecondsElapsed">
+            <summary>
+            Returns <see cref="P:PowerConsole.TimerEventArgs.Ticks"/> formatted as "hh:mm:ss"
+            representing the number of seconds elapsed.
+            </summary>
+            <returns>A formatted string that represents the time that elapsed.</returns>
         </member>
         <member name="T:PowerConsole.TypeCategory">
             <summary>
