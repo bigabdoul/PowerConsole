@@ -19,7 +19,7 @@
                     // this action is called back after 5.5 seconds; the name
                     // of the time out is useful should we want to clear it
                     // before this action gets executed
-                    e.Console.Write("\n").WriteError("Time out occured after 5.5 seconds! " +
+                    e.Console.Write("\n").WriteError("First timer: Time out occured after 5.5 seconds! " +
                         "Timer has been automatically disposed.\n");
 
                     // the next statement will make the current instance of 
@@ -38,7 +38,7 @@
                     }
 
                     e.Console
-                    .Write($"\rFirst timer tick: ", System.ConsoleColor.White)
+                    .Write($"\rSecond timer tick: ", System.ConsoleColor.White)
                     .WriteInfo(e.TicksToSecondsElapsed());
 
                     if (e.Ticks > 4)
@@ -47,18 +47,18 @@
                         // e.Console.ClearTimeout("SampleTimeout");
                     }
 
-                }, millisecondsInterval: 1000, "EverySecond")
+                }, millisecondsInterval: 1000)
 
                 // we can add as many timers as we want (or the computer's resources permit)
                 .SetInterval(e =>
                 {
                     if (e.Ticks == 1 || e.Ticks == 3) // 1.5 or 4.5 seconds to avoid write collision
                     {
-                        e.Console.WriteSuccess("\nSecond timer is active...\n");
+                        e.Console.WriteSuccess($"\nThird timer is {(e.Ticks == 1 ? "" : "still ")}active...\n");
                     }
                     else if (e.Ticks == 5)
                     {
-                        e.Console.WriteWarning("\nSecond timer is disposing...\n");
+                        e.Console.WriteWarning("\nThird timer is disposing...\n");
 
                         // doesn't dispose the timer
                         // e.Timer.Stop();
@@ -68,7 +68,7 @@
                     }
                     else
                     {
-                        System.Diagnostics.Trace.WriteLine($"Second timer tick: {e.Ticks}");
+                        System.Diagnostics.Trace.WriteLine($"Third timer tick: {e.Ticks}");
                     }
                 }, 1500)
                 .Prompt("\nPress Enter to stop the timers: ")
