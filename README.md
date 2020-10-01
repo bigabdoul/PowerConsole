@@ -63,19 +63,18 @@ namespace PowerConsoleTest
 
             if (!MyConsole.PromptNo("Would you like to define a specific culture for this session? (yes/No) "))
             {
-                // try to set user-defined culture
-                try
-                {
-                    MyConsole.Write("\nEnter a culture name to use, like ")
-                        .WriteList(ConsoleColor.Blue, ", ", "en", "en-us", "fr", "fr-ca", "de").WriteLine(", etc.")
-                        .WriteLine("Leave empty if you wish to use your computer's current culture.\n")
-                        .Write("Culture name: ")
-                        .SetResponse(culture => MyConsole.SetCulture(culture));
-                }
-                catch (System.Globalization.CultureNotFoundException ex)
-                {
-                    MyConsole.WriteError(ex);
-                }
+                MyConsole.Write("\n\tEnter a culture name to use, like ")
+                    .WriteList(color: ConsoleColor.Blue, 
+                        separator: ", ", /* args: */ "en", "en-us", "fr", "fr-ca", "de")
+                    .WriteLine(", etc.")
+                    .WriteLine("\tLeave empty if you wish to use your computer's current culture.\n")
+                    .Write("\tCulture name: ")
+
+                    // try to set the culture and eventually catch an instance of
+                    // CultureNotFoundException; other error types will be rethrown
+                    .TrySetResponse<CultureNotFoundException>(
+                        culture => MyConsole.SetCulture(culture),
+                        error => MyConsole.WriteError(error));
             }
 
             PlayFizzBuzz();
@@ -368,7 +367,7 @@ namespace UserInfoCollectionApp
             {
                 // Create a new instance of the UserInfo class and initialize
                 // its properties with the responses of the previous prompts.
-                // CreateObject<T> as an extension method defined in the
+                // CreateObject<T> is an extension method defined in the
                 // static SmartConsoleExtensions class.
                 var user = MyConsole.CreateObject<UserInfo>();
                 
