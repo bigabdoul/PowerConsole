@@ -54,9 +54,10 @@ namespace PowerConsole.Test
 
             if (!console.PromptNo("\tWould you like to define a specific culture for this session? (yes/No) "))
             {
-                // try to set user-defined culture
                 console.Write("\n\tEnter a culture name to use, like ")
-                    .WriteList(ConsoleColor.Blue, ", ", "en", "en-us", "fr", "fr-ca", "de").WriteLine(", etc.")
+                    .WriteList(color: ConsoleColor.Blue, 
+                        separator: ", ", /* args: */ "en", "en-us", "fr", "fr-ca", "de")
+                    .WriteLine(", etc.")
                     .WriteLine("\tLeave empty if you wish to use your computer's current culture.\n")
                     .Write("\tCulture name: ")
 
