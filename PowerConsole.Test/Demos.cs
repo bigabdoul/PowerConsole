@@ -16,10 +16,10 @@
                 // is automatically removed by the TimerManager class
                 .SetTimeout(e =>
                 {
-                    // this action is called back after 10 seconds; the name
+                    // this action is called back after 5.5 seconds; the name
                     // of the time out is useful should we want to clear it
                     // before this action gets executed
-                    e.Console.Write("\n").WriteError("Time out occured after 5 seconds! " +
+                    e.Console.Write("\n").WriteError("Time out occured after 5.5 seconds! " +
                         "Timer has been automatically disposed.\n");
 
                     // the next statement will make the current instance of 

@@ -8,11 +8,11 @@ easier, and adds more useful utility methods to it.
 PowerConsole is a .NET Standard project that makes strongly-typed user input
 collection and validation through a console easier. Through the **SmartConsole** 
 class, it enhances the traditional system's Console by encapsulating complex 
-and redundant processing logic, and defining a bunch of utility functions. 
-Check it out on Github at https://github.com/bigabdoul/PowerConsole or quickly 
-create a new .NET Core Console application and install the package from NuGet:
+and redundant processing logic, and defining a bunch of utility functions.
+Quickly create a new .NET Core Console application and install the package from
+NuGet:
 
-`Install-Package PowerConsole -Version 1.0.0`
+`Install-Package PowerConsole`
 
 ## Why PowerConsole?
 
@@ -51,14 +51,14 @@ namespace PowerConsoleTest
         static void Main()
         {
             MyConsole.SetForegroundColor(ConsoleColor.Green)
-                .WriteLine("Welcome to the Power Console Demo!\n")
-                .WriteLine($"Project:\t {nameof(PowerConsole)}")
-                .WriteLine("Version:\t 1.0.0")
-                .WriteLine("Description:\t Makes strongly-typed user input collection and validation through ")
-                .WriteLine("\t\t a console easier. This is a Console on steroids.")
-                .WriteLine("Author:\t\t Abdourahamane Kaba")
-                .WriteLine("License:\t MIT")
-                .WriteLine("Copyright:\t (c) 2020 Karfamsoft\n")
+                .WriteLines("Welcome to the Power Console Demo!\n",
+                    $"Project:\t {nameof(PowerConsole)}",
+                    "Version:\t 1.0.0",
+                    "Description:\t Makes strongly-typed user input collection and validation through ",
+                    "\t\t a console easier. This is a Console on steroids.",
+                    "Author:\t\t Abdourahamane Kaba",
+                    "License:\t MIT",
+                    "Copyright:\t (c) 2020 Karfamsoft\n")
                 .RestoreForegroundColor();
 
             if (!MyConsole.PromptNo("Would you like to define a specific culture for this session? (yes/No) "))
@@ -85,6 +85,7 @@ namespace PowerConsoleTest
         {
             MyConsole.WriteInfo("\nWelcome to FizzBuzz!\nTo quit the loop enter 0.\n\n");
 
+            // nullable types are supported as well
             double? number;
             const string validationMessage = "Only numbers, please! ";
 
@@ -415,3 +416,96 @@ make corrections where required.
 - Extensibilty: Since `SmartConsole` is an instance class other classes can 
   inherit it to further extend it. We can also add extension methods to it, as
   shown in the statement `MyConsole.CreateObject<UserInfo>();`.
+- Timers: New methods similar to JavaScript's `window.setTimeout`,
+  `window.setInterval`, `window.clearTimeout`, and `window.clearInterval` have
+  been added.
+
+  ```C#
+    namespace PowerConsoleTest
+    {
+        class Program
+        {
+            static readonly SmartConsole MyConsole = SmartConsole.Default;
+
+            static void Main()
+            {
+                RunTimers();
+            }
+
+            public static void RunTimers()
+            {
+                // CAUTION: SmartConsole is not thread safe!
+                // Spawn multiple timers carefully when accessing
+                // simultaneously members of the SmartConsole class.
+
+                MyConsole.WriteInfo("\nWelcome to the Timers demo!\n")
+
+                    // SetTimeout is called only once after the provided delay and
+                    // is automatically removed by the TimerManager class
+                    .SetTimeout(e =>
+                    {
+                        // this action is called back after 5.5 seconds; the name
+                        // of the time out is useful should we want to clear it
+                        // before this action gets executed
+                        e.Console.Write("\n").WriteError("Time out occured after 5.5 seconds! " +
+                            "Timer has been automatically disposed.\n");
+
+                        // the next statement will make the current instance of 
+                        // SmartConsole throw an exception on the next prompt attempt
+                        // e.Console.CancelRequested = true;
+
+                        // use 5500 or any other value not multiple of 1000 to 
+                        // reduce write collision risk with the next timer
+                    }, millisecondsDelay: 5500, name: "SampleTimeout")
+
+                    .SetInterval(e =>
+                    {
+                        if (e.Ticks == 1)
+                        {
+                            e.Console.WriteLine();
+                        }
+
+                        e.Console
+                        .Write($"\rFirst timer tick: ", System.ConsoleColor.White)
+                        .WriteInfo(e.TicksToSecondsElapsed());
+
+                        if (e.Ticks > 4)
+                        {
+                            // we could remove the previous timeout:
+                            // e.Console.ClearTimeout("SampleTimeout");
+                        }
+
+                    }, millisecondsInterval: 1000, "EverySecond")
+
+                    // we can add as many timers as we want (or the computer's resources permit)
+                    .SetInterval(e =>
+                    {
+                        if (e.Ticks == 1 || e.Ticks == 3) // 1.5 or 4.5 seconds to avoid write collision
+                        {
+                            e.Console.WriteSuccess("\nSecond timer is active...\n");
+                        }
+                        else if (e.Ticks == 5)
+                        {
+                            e.Console.WriteWarning("\nSecond timer is disposing...\n");
+
+                            // doesn't dispose the timer
+                            // e.Timer.Stop();
+
+                            // clean up if we no longer need it
+                            e.DisposeTimer();
+                        }
+                        else
+                        {
+                            System.Diagnostics.Trace.WriteLine($"Second timer tick: {e.Ticks}");
+                        }
+                    }, 1500)
+                    .Prompt("\nPress Enter to stop the timers: ")
+                    
+                    // makes sure that any remaining timer is disposed off
+                    .ClearTimers()
+
+                    .WriteSuccess("Timers cleared!\n");
+            }
+        }
+    }
+  ```
