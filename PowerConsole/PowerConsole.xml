@@ -4,6 +4,69 @@
         <name>PowerConsole</name>
     </assembly>
     <members>
+        <member name="T:PowerConsole.ConsoleColorExtensions">
+            <summary>
+            Provides extension methods to values of the <see cref="T:System.ConsoleColor"/> enumeration.
+            </summary>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.Write(System.ConsoleColor,System.String)">
+            <summary>
+            Writes out a message in the default <see cref="T:PowerConsole.SmartConsole"/>
+            instance using the specified <paramref name="color"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.Write(System.ConsoleColor,System.Object)">
+            <summary>
+            Writes out an object's string representation in the default
+            <see cref="T:PowerConsole.SmartConsole"/> instance using the specified 
+            <paramref name="color"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="obj">The object to write.</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.Write(System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes out a formatted, colored string using the same 
+            semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.WriteLine(System.ConsoleColor,System.String)">
+            <summary>
+            Writes out a message in the default <see cref="T:PowerConsole.SmartConsole"/>
+            instance using the specified <paramref name="color"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="message">The message to write.</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.WriteLine(System.ConsoleColor,System.Object)">
+            <summary>
+            Writes out an object's string representation in the default
+            <see cref="T:PowerConsole.SmartConsole"/> instance using the specified 
+            <paramref name="color"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="obj">The object to write.</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.ConsoleColorExtensions.WriteLine(System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes out a formatted, colored string using the same 
+            semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="color">The used <see cref="T:System.ConsoleColor"/>.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">An object array that contains zero or more objects to format</param>
+            <returns>A reference to the default <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
         <member name="T:PowerConsole.ContinuationException">
             <summary>
             Represents an exception that is thrown when the condition required for
@@ -1111,6 +1174,49 @@
             <param name="_">The used <see cref="T:PowerConsole.SmartConsole"/>. Is not used.</param>
             <param name="func">The delegate to invoke.</param>
             <returns><typeparamref name="T"/> which represents the result of the delegate <paramref name="func"/>.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.Write(PowerConsole.SmartConsole,System.Object,System.ConsoleColor)">
+            <summary>
+            Writes out an object's string representation in the system's 
+            <see cref="T:System.Console"/> using the specified <paramref name="color"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="obj">The object to write.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to use.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.WriteLine(PowerConsole.SmartConsole,System.String,System.ConsoleColor)">
+            <summary>
+            Writes out a formatted, colored string and a new line, using the
+            same semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to use.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.WriteLine(PowerConsole.SmartConsole,System.Object,System.ConsoleColor)">
+            <summary>
+            Writes out a formatted, colored object and a new line, using the
+            same semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="message">The message to write.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to use.</param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
+        </member>
+        <member name="M:PowerConsole.SmartConsoleExtensions.WriteLine(PowerConsole.SmartConsole,System.ConsoleColor,System.String,System.Object[])">
+            <summary>
+            Writes out a formatted, colored string and a new line, using the
+            same semantics as <see cref="M:System.String.Format(System.String,System.Object[])"/>.
+            </summary>
+            <param name="console">The used <see cref="T:PowerConsole.SmartConsole"/>.</param>
+            <param name="color">The <see cref="T:System.ConsoleColor"/> to use.</param>
+            <param name="format">A composite format string.</param>
+            <param name="args">
+            An object array that contains zero or more objects to format and write.
+            </param>
+            <returns>A reference to the current <see cref="T:PowerConsole.SmartConsole" /> instance.</returns>
         </member>
         <member name="M:PowerConsole.SmartConsoleExtensions.AsString(System.Collections.Generic.IEnumerable{PowerConsole.Prompt},System.String)">
             <summary>

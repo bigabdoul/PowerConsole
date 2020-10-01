@@ -562,6 +562,57 @@ namespace PowerConsole
         /// <returns><typeparamref name="T"/> which represents the result of the delegate <paramref name="func"/>.</returns>
         public static T Result<T>(this SmartConsole _, Func<T> func) => func.Invoke();
 
+        #region Write with ConsoleColor
+
+        /// <summary>
+        /// Writes out an object's string representation in the system's 
+        /// <see cref="Console"/> using the specified <paramref name="color"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="obj">The object to write.</param>
+        /// <param name="color">The <see cref="ConsoleColor"/> to use.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole Write(this SmartConsole console, object obj, ConsoleColor color)
+            => console.SetForegroundColor(color).Write(obj).RestoreForegroundColor();
+
+        /// <summary>
+        /// Writes out a formatted, colored string and a new line, using the
+        /// same semantics as <see cref="string.Format(string, object[])"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="color">The <see cref="ConsoleColor"/> to use.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole WriteLine(this SmartConsole console, string message, ConsoleColor color)
+            => console.SetForegroundColor(color).WriteLine(message).RestoreForegroundColor();
+
+        /// <summary>
+        /// Writes out a formatted, colored object and a new line, using the
+        /// same semantics as <see cref="string.Format(string, object[])"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="message">The message to write.</param>
+        /// <param name="color">The <see cref="ConsoleColor"/> to use.</param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole WriteLine(this SmartConsole console, object message, ConsoleColor color)
+            => console.SetForegroundColor(color).WriteLine(message).RestoreForegroundColor();
+
+        /// <summary>
+        /// Writes out a formatted, colored string and a new line, using the
+        /// same semantics as <see cref="string.Format(string, object[])"/>.
+        /// </summary>
+        /// <param name="console">The used <see cref="SmartConsole"/>.</param>
+        /// <param name="color">The <see cref="ConsoleColor"/> to use.</param>
+        /// <param name="format">A composite format string.</param>
+        /// <param name="args">
+        /// An object array that contains zero or more objects to format and write.
+        /// </param>
+        /// <returns>A reference to the current <see cref="SmartConsole" /> instance.</returns>
+        public static SmartConsole WriteLine(this SmartConsole console, ConsoleColor color, string format, params object[] args)
+            => console.SetForegroundColor(color).WriteLine(format, args).RestoreForegroundColor();
+
+        #endregion
+
         /// <summary>
         /// Returns the combined string representation of all <see cref="Prompt"/>
         /// elements contained in the specified collection.

@@ -1,4 +1,6 @@
-﻿namespace PowerConsole.Test
+﻿using System;
+
+namespace PowerConsole.Test
 {
     internal static class Demos
     {
@@ -9,8 +11,7 @@
             // CAUTION: SmartConsole is not thread safe!
             // Spawn multiple timers carefully when accessing
             // simultaneously members of the SmartConsole class.
-
-            MyConsole.WriteInfo("\nWelcome to the Timers demo!\n")
+            ConsoleColor.Blue.Write("\nWelcome to the Timers demo!\n")
 
                 // SetTimeout is called only once after the provided delay and
                 // is automatically removed by the TimerManager class
@@ -65,6 +66,8 @@
 
                         // clean up if we no longer need it
                         e.DisposeTimer();
+
+                        ConsoleColor.DarkGreen.Write("Third timer was disposed.\n");
                     }
                     else
                     {
@@ -89,7 +92,7 @@
                 void _Setter(int input) => mode = input;
                 static bool _Validator(int input) => input > -1 && input < 3;
 
-                var username = MyConsole.WriteInfo("\nHi there! This is the password reader demo.\n\n")
+                var username = ConsoleColor.Blue.Write("\nHi there! This is the password reader demo.\n\n")
                     .WriteLine("Input modes:")
                     .WriteLine("  1: Secured")
                     .WriteLine("  2: Obscured")
@@ -119,7 +122,7 @@
 
         public static void FizzBuzz()
         {
-            MyConsole.WriteInfo("\nWelcome to FizzBuzz!\nTo quit the loop enter 0.\n\n");
+            ConsoleColor.Blue.Write("\nWelcome to FizzBuzz!\nTo quit the loop enter 0.\n\n");
 
             double? number;
             const string validationMessage = "Only numbers, please! ";
