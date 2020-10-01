@@ -40,6 +40,7 @@ application that seamlessly enforces complex business logic.
 
 ```C#
 using System;
+using System.Globalization;
 using PowerConsole;
 
 namespace PowerConsoleTest
@@ -234,14 +235,22 @@ namespace MortgageCalculatorApp
         {
             MyConsole.WriteInfo("Welcome to Mortgage Calculator!\n\n");
 
+            // SmartConsole ensures that only a floating-point number is entered
+            // where the decimal part (depending on the current culture) is either
+            // a period '.', a comma ',' or the appropriate culture-specific separator
             var principal = MyConsole.GetResponse<decimal>("Principal: ",
                 validationMessage: "Enter a number between 1000 and 1,000,000: ",
                 validator: input => input >= 1000M && input <= 1000000M);
 
+            // numeric integral data types don't have a decimal part, hence SmartConsole
+            // will ignore it if the user types such characters;
             var numPayments = MyConsole.GetResponse<short>("Number of payments: ",
                 "Please enter a whole number between 1 and 360: ",
                 input => input >= 1 && input <= 360);
 
+            // plus, a single negative symbol (usually a minus sign) is allowed at the 
+            // beginning of any numeric data type; this is why custom validation is 
+            // required to enforce the constraints specification
             var rate = MyConsole.GetResponse<float>("Annual interest rate: ",
                 "The interest rate must be > 0 and <= 30.",
                 input => input > 0F && input <= 30F);
