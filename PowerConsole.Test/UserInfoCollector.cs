@@ -41,10 +41,7 @@ namespace PowerConsole.Test
 
                     // give the user an opportunity to review and correct their inputs
                     .PromptYes("Is that correct? (Y/n) ") == false
-            )
-            {
-                // nothing else required within this while loop
-            }
+            ) ; // empty block of while-loop not required
 
             MyConsole.WriteInfo("Thank you for providing your details.\n");
 
