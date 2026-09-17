@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PowerConsole\PowerConsole.csproj" />
+    <ProjectReference Include="..\..\src\PowerConsole\PowerConsole.csproj" />
   </ItemGroup>
 
 </Project>
