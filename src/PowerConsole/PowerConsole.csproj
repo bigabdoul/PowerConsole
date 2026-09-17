@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <RootNamespace>PowerConsole</RootNamespace>
     <AssemblyName>PowerConsole</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>Abdourahamane Kaba</Authors>
     <Company>Karfamsoft</Company>
     <Description>Makes strongly-typed user input collection and validation through the Console easier, and adds more useful utility methods to it.</Description>
@@ -18,18 +19,10 @@
 - SetTimeout
 - ClearInterval
 - ClearTimeout</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <Version>1.2.0</Version>
     <AssemblyVersion>1.2.0.0</AssemblyVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>PowerConsole.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>PowerConsole.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>
